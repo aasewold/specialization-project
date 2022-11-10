@@ -2,3 +2,47 @@
 \label{chap:conclusion}
 
 TODO
+
+
+\section{Future Work}
+
+\begin{enumerate}
+    \item Fungerer Direct Policy Learning bedre enn Behavioural Cloning?
+        \\ - eventuelt lage et nytt datasett som styres av den ferdigtrente modellen i stedet for ekspertagenten,
+            men som likevel får labels av ekspertagenten. Kan da fintune TransFuser på det nye datasettet, eventuelt trene fra scratch med kombo av begge.
+
+    \item Mulig å trene en Transition function som predicter future state?
+        Ta outputen $Z$ og $Z'$ fra Transfuser backbonet for to states $s$ og $s'$ og action $a$
+        Supervised learning for å lære $T: (Z, a) \rightarrow Z'$
+
+    \item Mulig å trene en forklarings-funksjon som tar inn Z' og predicter hvorfor bilen gjør som den gjør
+        \\ - venter på rødt lys/stoppskilt/??
+        \\ - sakker ned pga ???
+        \\ - speeder opp pga ???
+        \\ - svinger (venstre? høyre?) fordi ??
+        \\ - kjører i oppover/nedoverbakke
+        \\ - er det biler i fila til venstre? høyre?
+        \\ - er det motkommende bil?
+        \\ - regner det? glatt?
+
+    \item Recurrent Transfuser? Legge til en MLP som tar $(Z_{t-1}, Z) \rightarrow Z'$
+        Nødvendig med nytt datasett da og ny trening. Må trene på konsistente episoder og resette state-vector hver gang man går over i en ny episode for at det skal matche inference-time miljøet. Evt. om vi kan ha treningssamples med alt fra 10ms til 2000ms mellom hvert tick, lærer den å takle det mon tro?
+
+    \item Lage dataset med både low- og high-quality bilder
+    
+    \item Feature Pyramid Network attached to the ends of both the Image and BEV branches.
+    
+    \item Combine both Image and BEV outputs (with dropout to ensure the transformers are necessary for information sharing) through a big MLP and use the output as input to all the auxiliary tasks (instead of taking HD map directly from BEV for instance). Summary: bottleneck everything through a latent vector.
+    
+    \item Analyze class imbalance in the training data, for instance in the segmentation maps. Too much sky, road, ...?
+    \begin{enumerate}
+        \item Focal Loss or manual $\alpha$-scaling?
+    \end{enumerate}
+    
+    \item Use the HD map for waypoint and route planning?
+    \begin{enumerate}
+        \item HD-map currently currently classifies into "road", "lane marking", and "other". Good enough?
+        \item Use it to prevent driving on sidewalk
+        \item Lane detection ...
+    \end{enumerate}
+\end{enumerate}

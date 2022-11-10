@@ -5,19 +5,79 @@
 
 
 \section{CARLA Simulator}
+\acrfull{carla} is an open source photo-realistic simulator for autonomous driving research \cite{introducing-carla-paper}. It was developed from the ground up to support development, training and validation of autonomous urban driving systems. CARLA provides free open digital assets such as urban layouts, buildings and vehicles. Additionally the simulator includes a suit of sensors, environmental conditions, full control over of static and dynamic actors, a traffic manager and more.
+
+CARLA is built with a scalable client-server architecture in mind. The server uses Unreal Engine \cite{unrealengine} as a simulation foundation and is responsible for tasks such as scene and sensor rendering, computation of realistic physics, actor updates and providing updated world information to the connected clients. Multiple clients can be connected to the CARLA server, and these send commands to the server and receive updated world information in return. Example commands are traffic generation, spawning new actors, controlling vehicles and setting weather conditions.
 
 \subsection{Python API}
+To implement the client-server functionality, the CARLA team has developed client APIs in Python \cite{carla-python-api} and C++ \cite{carla-cplusplus-api} that leverages sockets to establish a connection to the server. The work in this thesis is based on the latest released version of the Python API, which in the time of writing is version 0.9.13. The Python API can be used to control the core parts of the simulation: 
+
+\begin{description}
+    \item[World:] The world represents the simulation, and one can change properties such as weather conditions, lighting and the map to use.
+    \item[Map:] The map represents the actual simulated world, often called the town. The client can manage roads, lanes and junctions in the map, which are used together with waypoints to provide vehicles with a navigation path. Waypoints are simply points in 3D space oriented in the direction of the lane containing it.
+    \item[Actors:] An actor is anything that plays a role in the simulation. Examples are pedestrians, vehicles, sensors and traffic lights.
+    \item[Blueprints:] Blueprints are already-made models used to spawn new actors into the world. These includes properties such as vehicle color, sensor channels and pedestrian walking speed.
+    \item[Sensors:] Sensors are attached to vehicles. They observe the simulated environment, collect data and make this available to the client. Many sensor types exists in CARLA, including realistic sensors (cameras, \acrshort{lidar}, GPS, etc.) and ground-truth sensors from the simulator (collision detection, semantic segmentation, etc.). 
+\end{description}
+
 
 \subsection{Leaderboard}
+The CARLA Autonomous Driving Leaderboard \cite{carla-leaderboard} is an open platform for evaluation of driving performance by autonomous agents in realistic traffic scenarios. The goal of the platform is to simplify comparisons between different approaches to autonomous driving using a set of predefined routes. The routes vary in weather conditions and world layouts, and contain scenarios such as lane merging, lane changing, intersections, yielding to emergency vehicles and handling traffic lights. They also have constraints on which type of sensors one can utilize, depending on which leaderboard track they belong to. There are two leaderboard tracks; the "SENSORS track" only allows access to sensors attached to the vehicles, while the "MAP track" allows access to an HD world map in addition to the sensors.
 
-\subsection{Alternatives to CARLA (?)}
+The evaluation is based on two metrics. The first is route completion, which simply is the average percentage of route distance completed. The other metric counts infractions per kilometer and aggregates them into a penalty score. The infraction types counted by the leaderboard are collisions with pedestrians, vehicles and static objects, as well as running red lights and stop signs. The route completion score and infraction score is combined into a driving score, which is the main metric of the leaderboard.
 
+There are two versions of the leaderboard. Leaderboard 1.0 is for CARLA version 0.9.10, while Leaderboard 2.0 is for the latest CARLA version (0.9.13). Although Leaderboard 2.0 is the current version, it contains no entries at the time of writing. This thesis will therefore discuss submissions from leaderboard 1.0.
+
+
+\subsection{Alternatives to CARLA}
+There exists multiple simulator alternatives to CARLA, each with their own advantages and disadvantages. They often have a trade-off between visual fidelity of the simulated 3D environment and the level of realism in the computed vehicle physics \cite{carla-an-inside-out}.
+
+lgsvl \cite{LGSVL-simulator}, CarCraft, udacity, torcs, rrads, airsim, deepdrvie,
+
+
+nvidia drive sim (https://developer.nvidia.com/drive/simulation), rfpro
+
+
+er established å bruke CARLA, kun CARLA finnes på paperswithcode
 
 \section{Deep Learning}
 
 \subsection{Modular vs End-to-End Approaches}
 
 \subsection{Imitation Learning}
+
+Supervised learning
+State-action trajectories
+No hand-made reward function
+
+Behavioural Cloning
+- offline expert generates state-action pairs (s, a)
+- supervised learning on (s, a)
+- generally assumes (s1, a1) to be independent from (s2, a2) - NOT valid
+    - bad generalisation to unseen states, need large datasets and good variation
+
+Direct Policy Learning
+- interactive expert
+- for each state s query expert to retreive action a
+  - supervised learning on (s, a)
+- queries the expert on-demand to get labels for unseen scenarios during training
+    - but still have to cause those scenarios to happen to actually train on them
+- expert doesn't assume (s1, a1) to be independent from (s2, a2) - better planning
+- variants:
+    - DAGGER aggregates data into a big dataset which is trained on continuously
+    - SEARN \& SMILe seems to only train on the latest sample
+
+Inverse Reinforcement Learning
+- learn a reward function $R$ from observed behaviour that maps states to a reward $R: (s, a) \rightarrow r$
+- then do reinforcement learning using this reward function
+- repeat 
+
+
+\begin{enumerate}
+    \item Behaviour Cloning - i.i.d. assumption not valid
+    \item Direct Policy Learning
+    \item Adversarial Imitation / Inverse Reinforcement Learning
+\end{enumerate}
 
 \subsection{Reinforcement Learning}
 
@@ -35,6 +95,17 @@
 \section{Related Work}
 
 \subsection{Transfuser}
-Transfuser \cite{transfuser-pami} \cite{transfuser-cvpr}
+Transfuser, ranked 2nd when published and currently ranked 4th on the Carla leaderboard,
+is an end-to-end approach to autonomous driving in the Carla simulator.
+\cite{transfuser-pami} \cite{transfuser-cvpr} \cite{pwc-carla}
+The model uses both RGB images and LIDAR data, and outputs position waypoints that are passed to a traditional PID-controller for steering.
+By interleaving Transformer-blocks within both the RGB and LIDAR feature extraction branches,
+features are fused between the two sensor modalities leading to exchange of information and supposed improved understanding of the environment.
+
+During training, Transfuser optimizes a multi-task loss consisting of not only predicting waypoints,
+but also predicting depth and semantic segmentation images,
+as well as a top-down HD-map and bounding boxes vehicle detection.
+
+
 
 \subsection{Interfuser}
