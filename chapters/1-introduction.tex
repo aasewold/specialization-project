@@ -1,31 +1,61 @@
 \chapter{Introduction}
 
 \section{Background and Motivation}
+The field of autonomous driving has seen rapid progress since the first computer controlled self-driving car was released in 1986 \cite{AV-history}. With a top speed of 32 km/h, the modified Chevrolet was capable of basic routing and obstacle avoidance. By 1995, prototype cars demonstrated lane keeping, cooperative driving and better vision of the surroundings. Today, these features are just some of the challenges faced when designing and creating fully autonomous vehicles, and large players in the industry such as Tesla and Google are publicly pushing the technology towards this common goal \cite{tesla-ai-day-2022, waymo-cvpr-2022}. An issue brief published by the Environmental and Energy Study Institute from last year suggests that half of the newly produced vehicles could be fully autonomous by 2050, and half of all vehicles by 2060 \cite{eesi-av-climate-solution}. Still, large-scale deployment of fully self-driving vehicles is not currently present.
 
-% shameless copy av tdt39 introen min, kan bruke noe av det om vi ønsker
-The field of autonomous driving has seen rapid progress over the last years. Impactful players in the automotive industry such as Tesla and Google are publicly pushing the technology towards a common goal of fully self-driving cars \cite{tesla-ai-day-2021-review, waymo-cvpr-2022}. An EESI issue brief from last year mentions that around half of new vehicles could be autonomous by 2050, and by 2060 half of all vehicles \cite{eesi-av-climate-solution}. Improvements to safety and carbon emissions are also discussed. It is safe to say that self-driving vehicles will be a part of our future way of living. 
+%As the CEO of Tesla points out, the main challenge with autonomous driving is its root in the real world \cite{elon-musk-tweet-lol}. To remedy this, attempts of autonomous driving simplifies the environment in some way. For example, the World on Rails model assumes that "[...] the world is on rails, meaning that neither the agent nor it actions influence the environment" \cite{world-on-rails-paper}. Such assumptions and simplifications must be addressed before 
+
+The United Nations Economic Commission for Europe (UNECE) publishes every two years statistics of road traffic accidents in Europe and North America \cite{UNECE-traffic-accidents-2021}. Their latest release show that almost 100,000 people died as a result of road traffic accidents, which equals to an average of 270 people per day. Together with the World Health Organization (WHO) they clearly state that road traffic injuries are the leading cause of deaths for people aged 5-29 worldwide \cite{WHO-road-safety-report}. This is a clear motivation for the development and deployment of autonomous vehicles. They could help reduce or even remove the effect of human driving errors, such as driver inattention, distractions, false assumptions and ignoring speed limits, which are the cause of around 92 \% of road accidents \cite{towards-connected-autonomous-driving}.
+
+\todo{maybe add a paragraph about the environment and economical benefits of AVs}
+
+% Other potential benefits of a deployment of autonomous vehicles include ... 
+
+When building solutions for autonomous vehicles there are two choices for testing them: Either one uses real cars in real traffic, or one uses a realistic simulator. While the real world of course gives the most accurate results on a potential solution, a simulator can often be a good starting point. Not only are working with simulators instead of real cars much cheaper and more available to the research community, but it also has the advantage of iteration speed, data generation and safety. \acrfull{carla} is an open-source photo-realistic simulator for research on autonomous driving \cite{introducing-carla-paper}. It also includes an open leaderboard for evaluation of driving performance by autonomous agents in realistic traffic scenarios \cite{carla-leaderboard}.  
+
+In this this specialization project we will investigate the TransFuser model \cite{transfuser-pami}, one of the top performers on the CARLA leaderboard. We will attempt to set up and run their custom evaluation on our available hardware, using both pre-trained and re-trained weights. Overall this project will give valuable insights and experience in preparation for our master thesis.
 
 
-\begin{enumerate}
-    \item Autonomous driving in general
-    \begin{enumerate}
-        \item Motivation? miljø, økonomisk, sikkerhet, ... Eller hører det hjemme i intro?
-        \item en kilde: https://www.tandfonline.com/doi/full/10.1080/00423114.2018.1492142
-    \end{enumerate}
-\end{enumerate}
+\begin{comment}
+    
+- How (connected) autonomous driving can mitigate traffic congestion, road safety, inefficient fuel consumption, etc. \cite{towards-connected-autonomous-driving}
+- Mention why it is useful to experiment in a simulator? 
+ --- Safety, easier to generate data, etc.
+
+\end{comment}
+
 
 
 \section{Goals and Research Questions}
-RQs:
-\begin{enumerate}
-    \item Hva er state-of-the-art (i et simulert miljø / i CARLA)?
-    \item Kan vi gjenskape state-of-the-art i CARLA?
-\end{enumerate}
+Our research goal is ...
+
+To reach this goal we will answer the following research questions:
+\begin{itemize}
+    \item \textbf{RQ1:} Hva er state-of-the-art (i et simulert miljø / i CARLA)?
+    \item \textbf{RQ2:} Kan vi gjenskape state-of-the-art i CARLA?
+    \item \textbf{RQ?:} Hvordan sette opp CARLA i IDUN(?)
+    \item \textbf{RQ?:} Can we evaluate the TransFuser model using their pre-trained weights?
+    \item \textbf{RQ?:} Can we evaluate the TransFuser model using our re-trained weights?
+\end{itemize}
 
 
 \section{Contributions}
-Muligens droppe denne i høst?
+As this specialization project is mainly a theoretical preparation for the master thesis, contributions are not in focus. Still, the project has produced the following contributions, which can be found on our GitHub:\footnote{https://github.com/orgs/aasewold/repositories}
+
+\begin{itemize}
+    \item An updated TransFuser code base which works on the newest version of CARLA (0.9.13).
+    \item Python stub files for the CARLA Python API. These allow IDEs to show type hints and auto-completion for classes and methods imported from the CARLA package.
+\end{itemize}
 
 
-\section{Thesis Structure}
-Evt kalle denne "Report Structure" nå i høst
+\section{Report Structure} % obs: thesis structure på masteren
+This project report has the following structure:
+
+\begin{description}
+    \item[Chapter 1: Introduction] ...
+    \item[Chapter 2: Background and Related Work] ...
+    \item[Chapter 3: Methodology] ...
+    \item[Chapter 4: Experiments and Results] ...
+    \item[Chapter 5: Discussion] ...
+    \item[Chapter 6: Conclusion and Future Work] ...
+\end{description}

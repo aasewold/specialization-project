@@ -26,23 +26,23 @@ The CARLA Autonomous Driving Leaderboard \cite{carla-leaderboard} is an open pla
 
 The evaluation is based on two metrics. The first is route completion, which simply is the average percentage of route distance completed. The other metric counts infractions per kilometer and aggregates them into a penalty score. The infraction types counted by the leaderboard are collisions with pedestrians, vehicles and static objects, as well as running red lights and stop signs. The route completion score and infraction score is combined into a driving score, which is the main metric of the leaderboard.
 
-There are two versions of the leaderboard. Leaderboard 1.0 is for CARLA version 0.9.10, while Leaderboard 2.0 is for the latest CARLA version (0.9.13). Although Leaderboard 2.0 is the current version, it contains no entries at the time of writing. This thesis will therefore discuss submissions from leaderboard 1.0.
+There are two versions of the leaderboard. Leaderboard 1.0 is for CARLA version 0.9.10, while Leaderboard 2.0 is for the latest CARLA version (0.9.13). Although Leaderboard 2.0 is the current version, it contains no entries at the time of writing. This thesis will therefore discuss submissions from Leaderboard 1.0.
 
 
 \subsection{Alternatives to CARLA}
-There exists multiple simulator alternatives to CARLA, each with their own advantages and disadvantages. They often have a trade-off between visual fidelity of the simulated 3D environment and the level of realism in the computed vehicle physics \cite{carla-an-inside-out}.
+There exists multiple simulator alternatives to CARLA, each with their own advantages and disadvantages. They often have a trade-off between visual fidelity of the simulated 3D environment and the level of realism in the computed vehicle physics. According to \textcite{carla-an-inside-out}, who have done an extensive comparison between different alternatives, the state-of-the-art simulators that best meet this trad-off are CARLA and LGSVL \cite{LGSVL-simulator}. Similarly to CARLA, the open source LGSVL simulator provides tools which allows users to customizes sensors, controllable objects and other modules. Additionally, LGSVL provides integration with autonomous driving software which makes it a fully end-to-end tool. Note that the simulator stopped receiving updates by original authors as of January 2022. There still exist usable forks of the project which can be used, however. Other popular open source alternatives are AirSim \cite{airsim}, DeepDrive \cite{deepdrive} and Torcs \cite{torcs}.
 
-lgsvl \cite{LGSVL-simulator}, CarCraft, udacity, torcs, rrads, airsim, deepdrvie,
+An interesting upcoming simulator is NVIDIA Drive Sim \cite{nvidia-drive-sim}. It is an end-to-end simulation platform with focus on being physically accurate, fast and efficient at scale. While this is a project showing impressive photo realistic simulation, it is currently in an early access phase, meaning you need to apply to access it. Another disadvantage is the commercial and closed nature of the product, meaning that one will have less control and configurability over the simulator.
 
-
-nvidia drive sim (https://developer.nvidia.com/drive/simulation), rfpro
-
-
-er established å bruke CARLA, kun CARLA finnes på paperswithcode
+% kun CARLA finnes på paperswithcode
 
 \section{Deep Learning}
 
 \subsection{Modular vs End-to-End Approaches}
+
+Fra research plan draft, kan gjerne endres på:
+
+When developing systems for autonomous driving, we generally differ between two main approaches: modular and end-to-end. The former divides the autonomous system into modules with different areas of responsibility. The modules are for example designed for perception, prediction, planning or control. The end-to-end approach on the other hand looks at the autonomous system as one complete unit. This approach maps raw sensor data (RGB camera, LIDAR, GPS, etc.) directly into actions (acceleration, steering, braking, etc.). As discussed in a recent paper comparing end-to-end techniques, there is an ongoing shift towards the latter approach \cite{survey-on-end-to-end-techniques}. Even though the modular approach offers an explainable and verifiable system where each module can individually be evaluated, it lacks efficient use of computer resources and awareness of the high-level task that is autonomous driving. For example, the module for object detection might learn to recognize birds passing by in the sky, even though this is not relevant for steering. By contrast, end-to-end systems automatically learn to ignore the birds and instead use more resources on relevant objects such as road markings and pedestrians.
 
 \subsection{Imitation Learning}
 
