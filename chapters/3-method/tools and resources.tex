@@ -12,7 +12,6 @@ we have used virtual machines from
 IDI Horizon - Virtual Desktop Infrastructure for Visual Computing.
 These are equipped with NVIDIA A10-24Q GPUs and CUDA version 11.4.
 Virtual desktop access have been available through VMWare Horizon \cite{software:vmware:horizon}.
-\todo{fix empty parantheses in bibliography when citation is missing year}
 
 
 \subsection{\texttt{nap02}}
@@ -24,22 +23,13 @@ a bare-bones computer equipped with
 2x NVIDIA A100 80G GPUs with CUDA version 11.6,
 and 512 GiB RAM.
 
-To run TransFuser in a reproducible and stable environment,
-we created a Docker \cite{docker}-container 
-
 
 \subsection{Idun}
 
 Finally,
 to prepare for a larger amount of experiments during the master thesis,
-we have made preparations to utilize the Idun High Performance Computing cluster.
-Idun provides 864 CPU cores and 80 NVIDIA GPUs to the Department of Computer Science \cite{idun:overview}.
-These preparations will enable the opportunity to perform multiple future experiments in parallel.
+we have built tooling and documentation to utilize the Idun High Performance Computing cluster.
+Idun provides 864 CPU cores and 80 NVIDIA GPUs to the Department of Computer Science \cite{idun:overview},
+and thus enables a much higher degree of parallelization for future experiments.
+The cluster is managed using the Slurm Workload Manager \todo{cite {slurm}}.
 
-In particular, the 
-
-\lstinputlisting[
-    caption={SLURM job definition for running CARLA},
-    label=lst:idun:carla,
-    language=bash
-]{listings/idun/carla.slurm}

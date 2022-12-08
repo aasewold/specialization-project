@@ -1,7 +1,7 @@
 \chapter{Introduction}
 
 \section{Background and Motivation}
-The field of autonomous driving has seen rapid progress since the first computer controlled self-driving car was released in 1986 \cite{AV-history}. With a top speed of 32 km/h, the modified Chevrolet was capable of basic routing and obstacle avoidance. By 1995, prototype cars demonstrated lane keeping, cooperative driving and better vision of the surroundings. Today, these features are just some of the challenges faced when designing and creating fully autonomous vehicles, and large players in the industry such as Tesla and Google are publicly pushing the technology towards this common goal \cite{tesla-ai-day-2022, waymo-cvpr-2022}. An issue brief published by the Environmental and Energy Study Institute from last year suggests that half of the newly produced vehicles could be fully autonomous by 2050, and half of all vehicles by 2060 \cite{eesi-av-climate-solution}. Still, large-scale deployment of fully self-driving vehicles is not currently present.
+The field of autonomous driving has seen great progress since the first computer controlled self-driving car was released in 1986 \cite{AV-history}. With a top speed of 32 km/h, the modified Chevrolet was capable of basic routing and obstacle avoidance. By 1995, prototype cars demonstrated lane keeping, cooperative driving and better vision of the surroundings. Today, these features are just some of the challenges faced when designing and creating fully autonomous vehicles, and large players in the industry such as Tesla and Google are publicly pushing the technology towards this common goal \cite{tesla-ai-day-2022, waymo-cvpr-2022}. An issue brief published last year by the Environmental and Energy Study Institute suggests that half of the newly produced vehicles could be fully autonomous by 2050, and half of all vehicles by 2060 \cite{eesi-av-climate-solution}. Still, large-scale deployment of fully self-driving vehicles is not currently present.
 
 %As the CEO of Tesla points out, the main challenge with autonomous driving is its root in the real world \cite{elon-musk-tweet-lol}. To remedy this, attempts of autonomous driving simplifies the environment in some way. For example, the World on Rails model assumes that "[...] the world is on rails, meaning that neither the agent nor it actions influence the environment" \cite{world-on-rails-paper}. Such assumptions and simplifications must be addressed before 
 
@@ -13,7 +13,7 @@ The United Nations Economic Commission for Europe (UNECE) publishes every two ye
 
 When building solutions for autonomous vehicles there are two choices for testing them: Either one uses real cars in real traffic, or one uses a realistic simulator. While the real world of course gives the most accurate results on a potential solution, a simulator can often be a good starting point. Not only are working with simulators instead of real cars much cheaper and more available to the research community, but it also has the advantage of iteration speed, data generation and safety. \acrfull{carla} is an open-source photo-realistic simulator for research on autonomous driving \cite{introducing-carla-paper}. It also includes an open leaderboard for evaluation of driving performance by autonomous agents in realistic traffic scenarios \cite{carla-leaderboard}.  
 
-In this this specialization project we will investigate the TransFuser model \cite{transfuser-pami}, one of the top performers on the CARLA leaderboard. We will attempt to set up and run their custom evaluation on our available hardware, using both pre-trained and re-trained weights. Overall this project will give valuable insights and experience in preparation for our master thesis.
+In this specialization project we will investigate the TransFuser model \cite{transfuser-pami}, one of the top performers on the CARLA leaderboard. We will attempt to set up and run their custom evaluation on our available hardware, using both pre-trained and re-trained weights. Overall this project will give valuable insights and experience in preparation for our master thesis.
 
 
 \begin{comment}
@@ -40,11 +40,11 @@ To reach this goal we will answer the following research questions:
 
 
 \section{Contributions}
-As this specialization project is mainly a theoretical preparation for the master thesis, contributions are not in focus. Still, the project has produced the following contributions, which can be found on our GitHub:\footnote{https://github.com/orgs/aasewold/repositories}
+As this specialization project is mainly a theoretical preparation for the master thesis, contributions are not in focus. Still, the project has produced the following contributions, which can be found on our GitHub:\footnote{\url{https://github.com/orgs/aasewold}}
 
 \begin{itemize}
-    \item An updated TransFuser code base which works on the newest version of CARLA (0.9.13).
-    \item Python stub files for the CARLA Python API. These allow IDEs to show type hints and auto-completion for classes and methods imported from the CARLA package.
+    \item An updated TransFuser codebase which works on the newest version of CARLA (0.9.13).
+    \item Python stub files for the CARLA Python API. These allow code editors to show type hints and auto-completion for classes and methods imported from the CARLA package.
 \end{itemize}
 
 

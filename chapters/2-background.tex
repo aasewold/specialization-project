@@ -2,7 +2,7 @@
 \label{chap:background}
 
 \section{NAPLab Car}
-
+Beholde denne i høst?
 
 \section{CARLA Simulator}
 \acrfull{carla} is an open source photo-realistic simulator for autonomous driving research \cite{introducing-carla-paper}. It was developed from the ground up to support development, training and validation of autonomous urban driving systems. CARLA provides free open digital assets such as urban layouts, buildings and vehicles. Additionally the simulator includes a suit of sensors, environmental conditions, full control over of static and dynamic actors, a traffic manager and more.
@@ -10,7 +10,7 @@
 CARLA is built with a scalable client-server architecture in mind. The server uses Unreal Engine \cite{unrealengine} as a simulation foundation and is responsible for tasks such as scene and sensor rendering, computation of realistic physics, actor updates and providing updated world information to the connected clients. Multiple clients can be connected to the CARLA server, and these send commands to the server and receive updated world information in return. Example commands are traffic generation, spawning new actors, controlling vehicles and setting weather conditions.
 
 \subsection{Python API}
-To implement the client-server functionality, the CARLA team has developed client APIs in Python \cite{carla-python-api} and C++ \cite{carla-cplusplus-api} that leverages sockets to establish a connection to the server. The work in this thesis is based on the latest released version of the Python API, which in the time of writing is version 0.9.13. The Python API can be used to control the core parts of the simulation: 
+To implement the client-server functionality, the CARLA team has developed client APIs in Python \cite{carla-python-api} and C++ \cite{carla-cplusplus-api} that leverages sockets to establish a connection to the server. The work in this project is based on the latest released version of the Python API, which in the time of writing is version 0.9.13. The Python API can be used to control the core parts of the simulation: 
 
 \begin{description}
     \item[World:] The world represents the simulation, and one can change properties such as weather conditions, lighting and the map to use.
@@ -26,7 +26,7 @@ The CARLA Autonomous Driving Leaderboard \cite{carla-leaderboard} is an open pla
 
 The evaluation is based on two metrics. The first is route completion, which simply is the average percentage of route distance completed. The other metric counts infractions per kilometer and aggregates them into a penalty score. The infraction types counted by the leaderboard are collisions with pedestrians, vehicles and static objects, as well as running red lights and stop signs. The route completion score and infraction score is combined into a driving score, which is the main metric of the leaderboard.
 
-There are two versions of the leaderboard. Leaderboard 1.0 is for CARLA version 0.9.10, while Leaderboard 2.0 is for the latest CARLA version (0.9.13). Although Leaderboard 2.0 is the current version, it contains no entries at the time of writing. This thesis will therefore discuss submissions from Leaderboard 1.0.
+There are two versions of the leaderboard. Leaderboard 1.0 is for CARLA version 0.9.10, while Leaderboard 2.0 is for the latest CARLA version (0.9.13). Although Leaderboard 2.0 is the current version, it contains no entries at the time of writing. This report will therefore discuss submissions from Leaderboard 1.0.
 
 
 \subsection{Alternatives to CARLA}
@@ -38,13 +38,54 @@ An interesting upcoming simulator is NVIDIA Drive Sim \cite{nvidia-drive-sim}. I
 
 \section{Deep Learning}
 
-\subsection{Modular vs End-to-End Approaches}
+https://arxiv.org/abs/1704.05519  \cite{computer-vision-for-autonomous-vehicles}
 
-Fra research plan draft, kan gjerne endres på:
+https://ieeexplore.ieee.org/document/9700770 \cite{survey-on-end-to-end-techniques}
 
-When developing systems for autonomous driving, we generally differ between two main approaches: modular and end-to-end. The former divides the autonomous system into modules with different areas of responsibility. The modules are for example designed for perception, prediction, planning or control. The end-to-end approach on the other hand looks at the autonomous system as one complete unit. This approach maps raw sensor data (RGB camera, LIDAR, GPS, etc.) directly into actions (acceleration, steering, braking, etc.). As discussed in a recent paper comparing end-to-end techniques, there is an ongoing shift towards the latter approach \cite{survey-on-end-to-end-techniques}. Even though the modular approach offers an explainable and verifiable system where each module can individually be evaluated, it lacks efficient use of computer resources and awareness of the high-level task that is autonomous driving. For example, the module for object detection might learn to recognize birds passing by in the sky, even though this is not relevant for steering. By contrast, end-to-end systems automatically learn to ignore the birds and instead use more resources on relevant objects such as road markings and pedestrians.
 
 \subsection{Imitation Learning}
+
+Imitation Learning (IL) learning is an approach to training autonomous agents
+where the agents are trained to imitate the behaviour of an expert agent.
+The expert agent is used to determine the best course of action $a$ when exposed to different states $s$,
+which results in sequences of state-action pairs $(s, a)$.
+These state-action pairs serve as the ideal action choices
+that we wish to teach the imitating agent.
+Within the IL regime,
+there are three main algorithms for learning,
+which we will explore in further detail.
+
+Behavioural Cloning (BC) is one approach where the state-action pairs
+are treated as inputs to a supervised learning algorithm.
+Given an expert policy $\pi^*$ that one wishes to imitate,
+first generate a dataset $\mathcal{D}$
+with $N$ samples $\mathcal{D}_i = (s^*_i, a^*_i), i = 1 \dots N$
+from the expert policy distribution $d^{\pi^*}$.
+Then, using supervised learning,
+recover an approximate policy $\pi_\theta$
+that minimizes the training loss $\mathcal{L}$
+$$
+\pi_\theta =
+    \argmin_{\pi_{\hat{\theta}}}
+        \sum_{i=1}^{N}
+            \mathcal{L} \left(a_i^*, \pi_{\hat{\theta}} \left(s_i^*\right) \right)
+$$
+
+Behaviour cloning benefits greatly from the large amount of research on supervised learning. \todo{citation needed?}
+However, there are significant drawbacks to the method.
+One such drawback is the 
+Distribution Shift problem \todo{cite}
+in which during evaluation the agent is exposed to states
+not seen during training.
+This can cause the agent to choose actions which bring it further from its known domain,
+which can result in cascading and catastrophic failure.
+Using a self-driving vehicle as an example,
+consider an expert agent which always manages to drive in the center of its lane.
+An BC agent trained to mimic this expert may by chance and error end up slightly away from the center,
+causing it to experience states never before seen during training.
+The BC agent is not trained to handle this state,
+which may cause it to drift further and further away from the lane center.
+
 
 Supervised learning
 State-action trajectories
@@ -58,7 +99,7 @@ Behavioural Cloning
 
 Direct Policy Learning
 - interactive expert
-- for each state s query expert to retreive action a
+- for each state s query expert to retrieve action a
   - supervised learning on (s, a)
 - queries the expert on-demand to get labels for unseen scenarios during training
     - but still have to cause those scenarios to happen to actually train on them
@@ -83,29 +124,83 @@ Inverse Reinforcement Learning
 
 \subsection{Computer Vision (?)}
 
-\subsection{(Vision) Transformers (?)}
+\subsection{(Vision) Transformers, self-attention (?)}
+
+\section{Modular vs End-to-End Approaches}
+When developing systems for autonomous driving, we generally differ between two main approaches: modular and end-to-end \cite{multimodal-e2e-ad}. The former divides the autonomous system into modules with different areas of responsibility. There can for example be different modules responsible for perception, prediction, route planning or vehicle control. These modules vary in complexity. The end-to-end approach on the other hand looks at the autonomous system as one complete unit. This approach maps raw sensor data (RGB camera, LIDAR, GPS, etc.) directly into actions (acceleration, steering, braking, etc.). A visual comparision of the two approacches can be seen in \cref{fig:modular-vs-end-to-end}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/2/modular-end-to-end.png}
+    \caption{Figure showing the difference between modular (top) and end-to-end (bottom) approaches to autonomous vehicles. Source: \cite{computer-vision-for-autonomous-vehicles}.}
+    \label{fig:modular-vs-end-to-end}
+\end{figure}
+
+As discussed in a recent paper comparing end-to-end techniques, there is an ongoing shift towards the latter approach \cite{survey-on-end-to-end-techniques}. Even though the modular approach offers an explainable and verifiable system where each module can individually be evaluated, it lacks efficient use of computer resources and awareness of the high-level task that is autonomous driving. In addition, the modular approach requires huge amount of annotated data for each module. This is in contrast to the end-to-end approach where the annotations lives in the state of the car (steering commands, GPS location, etc.) at a given moment. This approach does however require the sensors to be synchronized. 
 
 
 \section{Challenging Tasks in Autonomous Driving}
 % or just "Challenges in Autonomous Driving"
 
 \subsection{Lane Prediction}
+...
 
+\subsection{Multi-modal sensors}
+...
 
 \section{Related Work}
 
-\subsection{Transfuser}
-Transfuser, ranked 2nd when published and currently ranked 4th on the Carla leaderboard,
-is an end-to-end approach to autonomous driving in the Carla simulator.
-\cite{transfuser-pami} \cite{transfuser-cvpr} \cite{pwc-carla}
-The model uses both RGB images and LIDAR data, and outputs position waypoints that are passed to a traditional PID-controller for steering.
+\subsection{TransFuser (2021)}
+TransFuser, ranked 2nd when published and currently ranked 4th on the CARLA Leaderboard,
+is an end-to-end approach to autonomous driving in the CARLA simulator
+\cite{transfuser-pami, transfuser-cvpr, pwc-carla}.
+In their paper, \textcite{transfuser-pami} explores how complementary sensors should be integrated for autonomous driving. Their model uses both RGB images and LIDAR data, and outputs position waypoints that are passed to a traditional PID-controller for steering.
 By interleaving Transformer-blocks within both the RGB and LIDAR feature extraction branches,
-features are fused between the two sensor modalities leading to exchange of information and supposed improved understanding of the environment.
+features are fused between the two sensor modalities leading to exchange of information and supposed improved understanding of the environment. An overview of the architecture is shown in \cref{fig:transfuser-architecture}.
 
-During training, Transfuser optimizes a multi-task loss consisting of not only predicting waypoints,
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/2/transfuser-architecture.png}
+    \caption{The TransFuser architecture uses several transformer modules for the fusion of intermediate feature maps between RGB and LIDAR data. The two branches are combined and fed into an MLP before passing it to an auto-regressive waypoint prediction network.  Source: \cite{transfuser-pami}.}
+    \label{fig:transfuser-architecture}
+\end{figure}
+
+During training, TransFuser optimizes a multi-task loss consisting of not only predicting waypoints,
 but also predicting depth and semantic segmentation images,
 as well as a top-down HD-map and bounding boxes vehicle detection.
 
+\textcite{transfuser-pami} also propose a new benchmark for autonomous driving called \textit{Longest6}. This involves longer routes, increased traffic density and more challenging pre-crash scenarios than existing closed-loop driving benchmarks. Another advantage of this benchmark over the official CARLA Leaderboard is that it can be used for evaluation on local resources without the online platform's computation budget restrictions.
+
+As this specialization project is based on the TransFuser model, a more detailed description can be found in  \cref{sec:transfuser}.
 
 
-\subsection{Interfuser}
+\subsection{Learning from All Vehicles (2022)}
+\textcite{chen2022lav} presents in their paper a system to train models for autonomous driving on data not just from the ego-vehicle itself, but also other vehicles it observes.
+They argue that training on other vehicle's trajectories will help with sample efficiency, greatly increase the chance that the model sees interesting scenarios and help the ego-vehicle avoid collisions. Finding these trajectories are however challenging due to partial observability and the lack of sensors in other vehicles.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=.7\textwidth]{figures/2/lav.png}
+    \caption{An overview of the Learning from All Vehicles inference architecture. It consists of three modules: A perception module, a motion planner and a low-level controller. Source: \cite{chen2022lav}.}
+    \label{fig:lav}
+\end{figure}
+
+Their end-to-end model consists of a three-stage modular pipeline, as seen in \cref{fig:lav}. The first stage is a perception module that maps raw sensor readings from three front-facing RGB cameras and LIDAR to map-view feature representations. Its goal is to create a robust and generalizable representation of the surrounding world, and to build vehicle-invariant features that help supervise the motion planner. The motion planner is the second stage and it uses these features to produce a series of waypoints describing the future trajectory of all vehicles that surrounds the ego-vehicle. The last stage is a low-level controller that converts motion plans into actions to be executed on the vehicle. \textcite{chen2022lav} reached the top of the CARLA Leaderboard with their submitted paper, and is currently ranked 3rd \cite{chen2022lav, pwc-carla}.
+
+
+\subsection{InterFuser (2022)}
+\textcite{shao2022interfuser} propose InterFuser, a safety-enhanced autonomous driving framework. They investigate methods for multi-modal sensor fusion in a more scalable and effective way than TransFuser's multi-stage approach. They also work towards interpretability of their end-to-end model by creating a safety mind map based on immediate features, which they argue can help unveil the model's decision basis and failure causes.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/2/interfuser.png}
+    \caption{The InterFuser architecture. It consists of an encoder-decoder network built on transformers, in addition to a safety controller that constraints the output actions to enhance driving safety. Source: \cite{shao2022interfuser}.}
+    \label{fig:interfuser}
+\end{figure}
+
+The models follows an encoder-decoder architecture as seen in \cref{fig:interfuser}. The input consists of three RGB cameras (left, front and right) and LIDAR. From the RGB cameras they create four images, one for each direction and one focusing-view image to capture distant traffic lights. The inputs are then fused in a multi-view multi-modal transformer before being fed into the decoder. The decoder takes queries in the form of waypoints, density maps and a traffic rule to the attention mechanism and outputs predictions of the same attributes. Finally, a safety controller uses the predicted waypoints, object density map and traffic rule to create a safety mind map, which is utilized to constrain the actions into a safe set. InterFuser is currently the top performer on the CARLA Leaderboard \cite{shao2022interfuser, pwc-carla}.
+
+
+%InterFuser uses a one-stage architecture to fuse information from multi-modal multi-view sensors, a method they claim is more scalable and effective than TransFuser's multi-stage architecture.
+
+
