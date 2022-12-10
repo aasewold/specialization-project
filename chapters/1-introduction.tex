@@ -13,7 +13,7 @@ The United Nations Economic Commission for Europe (UNECE) publishes every two ye
 
 When building solutions for autonomous vehicles there are two choices for testing them: Either one uses real cars in real traffic, or one uses a realistic simulator. While the real world of course gives the most accurate results on a potential solution, a simulator can often be a good starting point. Not only are working with simulators instead of real cars much cheaper and more available to the research community, but it also has the advantage of iteration speed, data generation and safety. \acrfull{carla} is an open-source photo-realistic simulator for research on autonomous driving \cite{introducing-carla-paper}. It also includes an open leaderboard for evaluation of driving performance by autonomous agents in realistic traffic scenarios \cite{carla-leaderboard}.  
 
-In this specialization project we will investigate the TransFuser model \cite{transfuser-pami}, one of the top performers on the CARLA leaderboard. We will attempt to set up and run their custom evaluation on our available hardware, using both pre-trained and re-trained weights. Overall this project will give valuable insights and experience in preparation for our master thesis.
+In this specialization project we will investigate the TransFuser model by \textcite{transfuser-pami}, one of the top performers on the CARLA leaderboard. We will attempt to set up and run their custom evaluation on our available hardware, using both pre-trained and re-trained weights. Overall this project will give valuable insights and experience in preparation for our master's thesis.
 
 
 \begin{comment}
@@ -27,35 +27,53 @@ In this specialization project we will investigate the TransFuser model \cite{tr
 
 
 \section{Goals and Research Questions}
-Our research goal is ...
-
-To reach this goal we will answer the following research questions:
+The goal of this specialization project is to set up CARLA on our own hardware and use it to train and evaluate TransFuser locally. This will be valuable experience to have for our master's thesis. To reach this goal we will answer the following research questions:
 \begin{itemize}
+    %\item \textbf{RQ1:} How do we set up CARLA to run on our own hardware (IDUN/nap02)?
+    %\item \textbf{RQ2:} Can we train and evaluate TransFuser successfully on our own hardware?
+    %\item \textbf{RQ3:} How does our local evaluation compare to the results from \textcite{transfuser-pami}?
+
+    % eventuelt  -->  +1 
+    \item \textbf{RQ1:} How can we utilize the available compute resources to train TransFuser?
+    \item \textbf{RQ2:} How does TransFuser perform using the adapted training method?
+    % \item \textbf{RQ3:} Which mistakes does TransFuser do (and how can we fix them)? (ref future work)
+\end{itemize}
+
+\begin{comment}
+gammelt:
+\begin{itemize}    
     \item \textbf{RQ1:} Hva er state-of-the-art (i et simulert miljø / i CARLA)?
     \item \textbf{RQ2:} Kan vi gjenskape state-of-the-art i CARLA?
     \item \textbf{RQ?:} Hvordan sette opp CARLA i IDUN(?)
     \item \textbf{RQ?:} Can we evaluate the TransFuser model using their pre-trained weights?
     \item \textbf{RQ?:} Can we evaluate the TransFuser model using our re-trained weights?
-\end{itemize}
+\end{itemize}    
+\end{comment}
 
+
+\section{Research Method}
+This specialization project is based on an experimental research method. We will conduct experiments using the \textit{longest6} benchmark in the CARLA simulator. The benchmark consists of 36 routes from six different towns, where each route has a unique environmental condition based on a combination of weather and lighting conditions.
+
+We will mainly use a quantitative analysis of the results. The performance metrics \textit{longest6} outputs are route completion, infraction score, driving score and infractions per kilometer \cite{transfuser-pami}, all which can be used to compare the different experiments. Additionally we wil also perform a qualitative analysis on the video output from the evaluation runs. This will be done by inspecting the first-person and birds-eye views of the autonomous vehicle while it is driving through the scenarios.
 
 \section{Contributions}
-As this specialization project is mainly a theoretical preparation for the master thesis, contributions are not in focus. Still, the project has produced the following contributions, which can be found on our GitHub:\footnote{\url{https://github.com/orgs/aasewold}}
+As this specialization project is mainly a theoretical preparation for the master's thesis, contributions are not in focus. Still, the project has produced the following contributions, which can be found on our GitHub:\footnote{\url{https://github.com/orgs/aasewold}}
 
 \begin{itemize}
     \item An updated TransFuser codebase which works on the newest version of CARLA (0.9.13).
     \item Python stub files for the CARLA Python API. These allow code editors to show type hints and auto-completion for classes and methods imported from the CARLA package.
+    \item intruksjoner IDUN osv.
 \end{itemize}
 
 
-\section{Report Structure} % obs: thesis structure på masteren
-This project report has the following structure:
+\section{Report Outline} % thesis structure på masteren
+This project report contains six chapters with the following outline:
 
 \begin{description}
-    \item[Chapter 1: Introduction] ...
-    \item[Chapter 2: Background and Related Work] ...
-    \item[Chapter 3: Methodology] ...
-    \item[Chapter 4: Experiments and Results] ...
-    \item[Chapter 5: Discussion] ...
-    \item[Chapter 6: Conclusion and Future Work] ...
+    \item[Chapter 1: Introduction] describes the context of the specialization project. This includes the background, motivation and purpose of the project, along with research questions and how the project contributes.
+    \item[Chapter 2: Background and Related Work] discusses relevant background topics and related work.
+    \item[Chapter 3: Methodology] describes in detail which tools and methods we will use to answer our research questions.
+    \item[Chapter 4: Experiments and Results] contains the descriptions, results and discussion for each of our experiments.
+    \item[Chapter 5: Discussion] will discuss the overall results of the specialization project in light of the research questions.
+    \item[Chapter 6: Conclusion and Future Work] summarizes what was achieved in the project, and discusses future work that could follow this project.
 \end{description}

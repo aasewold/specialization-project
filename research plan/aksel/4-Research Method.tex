@@ -1,0 +1,53 @@
+\subsection*{Research Method}
+
+This research quantitatively evaluates the performance of variants of TransFuser in the CARLA simulator.
+As is common in the literature \cite{transfuser:pami, interfuser, pwc:carla},
+we compare agents using the
+Driving Score (DS) and Infraction Score (IS)
+as defined by the CARLA Leaderboard \cite{carla:leaderboard}.
+The latter metric specifically measures the agents' safety performance.
+However it is meaningless to improve IS alone,
+since simply standing still will yield perfect IS but zero DS.
+We therefore aim to simultaneously improve IS and DS.
+
+Unlike the literature however,
+we do not submit agents to the CARLA Leaderboard for evaluation,
+since this online evaluation does not contain any maps with adverse weather.
+Instead,
+we modify the Longest6 benchmark as defined by TransFuser by adding snow and ice,
+thereby creating the Longest6-Winter benchmark.
+We then evaluate model \textbf{A}, \textbf{B} and \textbf{C}
+on both Longest6 and Longest6-Winter.
+This enables us to measure impact on safety in both clear and adverse conditions,
+and will answer \textbf{RQ} 1.1, 1.2, and 2.2.
+\textbf{RQ} 2.1 will be answered by measuring the accuracy of model \textbf{C}'s predictions.
+
+The predictions of neural networks may be significantly influenced by the random initialization of parameters during training.
+As shown by Reimers,
+training and evaluating deep-learning models once
+is therefore not sufficient to claim statistical significant comparisons \cite{reimers2018comparing}.
+In TransFuser,
+the authors account for this variance by training their model with three different random seeds,
+and report metrics for an ensamble of these three training runs.
+However, this still only produces one evaluation sample,
+and is therefore prone to the same statistical errors of single-run-comparisons that Reimers present.
+We therefore take additional care to evaluate the significance of our findings.
+
+Specifically,
+we hypothesise that weather-specific rules affecting decisions such as driving speed and distance to the vehicle in front will improve the IS in winter conditions.
+To support this claim,
+we perform experiments by training multiple independent instances of each of the three variants by randomly choosing the initial seed,
+and use Welch's t-test \cite{wikipedia:welchttest} with $\alpha = 0.05$ to determine significance of performance differences between the three model populations.
+This test is justified by the fact that the DS and IS metrics are calculated as averages over 36 independent routes in the Longest6-Winter benchmark,
+and then again averaged across all model instances,
+thus the Central Limit Theorem \cite{wikipedia:clt} applies and fulfills the required normality condition.
+% We therefore additionally report comparisons
+% using the stronger Almost Stochastic Order test \cite{del2018optimal, dror2019deep}
+% as implemented by \cite{ulmer2022deep}
+% with the recommended confidence $\alpha = 0.05$
+% and rejection threshold $\tau=0.2$ for $\epsilon_\text{min}$.
+
+A custom training dataset will be generated using TransFuser's method with added snow.
+This is required since no current dataset from CARLA contain adverse weather,
+as this is not yet implemented.
+The dataset will be generated and agents will be trained using the IDUN cluster at NTNU \cite{sjalander+:2019epic}.

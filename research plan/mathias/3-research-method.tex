@@ -1,0 +1,56 @@
+\section*{Research Method}
+The project will use an experimental research strategy. Design and creation could also be a relevant research strategy for this project, but our research questions focus more on observable experiments rather than development of new models or methods. Other strategies such as case studies and surveys are not found relevant for this project.
+
+Our hypothesis is that adding snow pole detection to autonomous vehicles will improve driving performance on snow covered roads. To test this, we will conduct experiments using CARLA benchmarks \cite{carla-driving-benchmark} on the snow covered map. As a baseline we will use the Interfuser model \cite{shao2022interfuser}, which is the top open-source performer on the CARLA leaderboard \cite{carla-leaderboard}. Using the built-in performance metrics for lane intersections and collisions \cite{carla-driving-benchmark-metrics}, we create a performance baseline in which to compare experiments introducing an independent variable in the form of snow pole detection. Using a simulated environment to generate data makes it possible to control variables that might affect the outcome of the experiments. It also enables us to repeat experiments in different conditions, where we for example vary the traffic, fog level and amount of snow.
+
+%The goal is to increase certainty that the measurements are indeed caused by adding snow poles and not other factors.
+%This is important when conducting experiments to show only if one factor causes measurable changes.
+% Additionally, This is done to
+
+As we will use the observation data generation strategy through measurements from benchmarks, it is natural to perform a quantitative analysis of the results. We will analyze performance metrics before and after adding the independent variable in the different experiment conditions, and use this to test our hypothesis. The performance results can then be used to answer our research questions. Since we use a simulator environment with no human interaction, there are not many potential internal validity threats. Factors such as time, experimenter effects and faulty instruments are irrelevant in a controllable and reproducible simulated benchmark.
+
+
+\begin{comment}
+
+- Survey: Obaining data from surveys are not relevant
+- Design and creation: Maybe?  focuses on developing new IT products, or artefacts. Often the new IT product is a computer-based system, but it can also be some element of the development process such as a new construct, model or method. 
+- Experiemnt: yah
+- Case study: not relevant
+- action research: focuses on research into action. The researchers plan to do something in a real-world situation, do it, and then reflect on what happened or was learnt, and then begin another cycle of plan-act-reflect. 
+- ethnography: not relevant
+
+
+Implement detection of snow poles --> compare scores with baseline
+Can also be visually inspected
+
+Research strategy: experiments
+ - Arguments for choosing this strategy is related to RQs
+ - Mention one or two other relevant strategies that I did not choose, and describe why
+ - Which test to use for proving hypothesis? What parameters to use for comparison?
+
+Not mixed method
+Data generation methods: Running benchmarks in CARLA, looking at different performance metrics (describe them, see CARLA leaderboard)
+ --> Measurements / observations, before and after adding the indpendent variable
+- Describe data generation methods and why they are adequate for my RQs and strategy -- Observation?
+- Quantitaive data is used beacuse we need to measure change
+
+Data analysis methods: Quantitative
+- How to analyze data, how to use data to answer research questions?
+- Argue for the specific analysis method I describe
+    - quantitate data is data/evidence based on numbers and is the main type of data generate by experiments
+    - analyze ordinal data --> possible to compare results based on numbers
+        - or discrete/continous
+- Do a systematic analysis of internal validity and address 2-3 common validity threats for my type of research (see problems with qualitative link)
+--> Measurements obtains are due to manipulations of the independent variable, and not to any other factors.
+  - Differences between experimental and control group
+  - Instrumentation --> faulty instruments used to measure the dependent variable
+  - Not a huge issue since the experiments are conducted in a simulator, meaning threats such as experimental mortality, reactivity and history is irrelevant.
+
+35%
+- C8: The research strategy is described and argued for, and it is easy to see why your research questions demand such a strategy.
+- C9: Other competing strategies are ruled out with good arguments
+- C10: Data generation methods are described and argued for based on strategy and RQs
+- C11: Data analysis methods are described and argued for, and show that the RQs can be answered.
+- C12: Main foreseen threats to internal validity are discussed
+
+\end{comment}

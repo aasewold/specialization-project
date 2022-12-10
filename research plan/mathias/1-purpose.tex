@@ -1,0 +1,74 @@
+\section*{Purpose}
+The field of autonomous driving has seen rapid progress over the last years. Impactful players in the automotive industry such as Tesla and Google are publicly pushing the technology towards a common goal of fully self-driving cars \cite{tesla-ai-day-2021, waymo-cvpr-2022}. An EESI issue brief from last year mentions that around half of new vehicles could be autonomous by 2050, and by 2060 half of all vehicles \cite{issue-brief-autonomous-vehicles}. 
+%Improvements to safety and carbon emissions are also discussed. It is safe to say that self-driving vehicles will be a part of our future way of living. 
+Still, multiple studies highlight challenges for autonomous driving in adverse weather conditions, such as rain, snow and fog \cite{impact-of-adverse-weather-conditions, Sensor-Fusion-Based-Semantic-Segmentation}. These challenges need to be solved before cars can become fully autonomous, especially in countries prone to these weather conditions. Motivated by this, our research project will focus on one of these challenges, namely snow covered roads. More specifically our objective is to find out whether 
+%existing snow pole infrastructure in Norway ... in snowy environments
+snow poles can assist autonomous cars in recognizing snow covered roads. % and if this leads to improved driving performance. TODO: better road/path predictions?
+
+Autonomous vehicles map raw data from sensors like cameras, LIDAR\footnote{LIDAR is a method for determining distance to objects using lasers.} and GPS into actions such as acceleration, steering and braking. Snow covered roads will therefore harm the car's ability to navigate, since spatial indicators like road markings and pavements can be partly or fully covered by snow.
+%and thus not be utilized.
+Recent studies attempt to counteract this through a technique called multi-modal sensor fusion \cite{path-detection-using-cnn-sensor-fusion, towards-autonomous-driving-in-arctic-areas}. The hope is that different weather-degraded sensors will complement each other to provide good enough predictions of where the road is. While they see promising results in their models, they still conclude that improvements can be made to the road detection system.
+%The latter study concludes that at map data from GPS sensors is also required for reach this goal.
+Another study proposing a similar technique explains that there is a lack of both training data and accurate simulations in which to test the solutions \cite{Autonomous-Steering-in-Adverse-Road-and-Weather-Conditions}. Indeed, an open-source state-of-the-art simulator for autonomous driving; CARLA \cite{carla-an-inside-out, survey-simulators}, does not include snow covered maps \cite{carla-maps}. Additionally, none of the aforementioned papers experiment with snow poles, giving motivation to pursue our objective.
+
+%The purpose of snow poles is to mark the road outline during the winter when the snow can make it hard for plow trucks and drives to see where road is. In Norway they are normally placed on both sides of the road at a given interval, and have a reflective mark near the top \cite{statens-vegvesen-handbok-111}. 
+While there is one concept study of self-localization using snow poles and other tall objects around roads \cite{concept-study-self-localization-laser-scanner}, it focuses more on accurately placing the snow poles on a map,
+rather than how they help for road recognition during autonomous driving.
+%rather than how to utilize them in an model for autonomous driving. 
+The proposed algorithm also only detects snow poles on the left side of the road.
+%, meaning valuable positional information from poles on the right side are lost. 
+The gap in research regarding the use of snow poles for autonomous driving has therefore inspired the following research questions:
+
+\begin{itemize}
+    \item \textbf{RQ1:} Can snow poles assist autonomous vehicles in recognizing snow covered roads in a simulated environment?
+    \begin{itemize}
+        % \item \textbf{RQ1.1:} Is it possible to implement snow covered roads and snow poles in the CARLA simulator?
+        \item \textbf{RQ1.1:} How does the current state-of-the-art model for autonomous driving in CARLA perform on a snow covered map?
+        \item \textbf{RQ1.2:} Can this model be modified to detect snow poles?
+        \item \textbf{RQ1.3:} What are the effects in measurable driving performance of introducing snow pole detection to this model?
+    \end{itemize}
+\end{itemize}
+
+
+
+\begin{comment}
+- RL for å kjenne igjen veier mellom brøytestikker
+- Fra brøytestikkene: interpolere mellom dem, lage waypoints i midten, gå fra dette til kontrollinfo for bilen
+- Simulere brøytestikker i Carla
+- Kart med snø i Carla? Verdifullt selv når det ikke er snø
+- (Man antar at man har gps-pos til stikkene, men litt urelevant for vårt prosjekt evt.)
+
+- Digital tvilling av veien opp til skihytta
+
+Objective: We want to know if the current snow pole infrastructure in Norway can help autonomous cars navigate snow covered roads.
+
+RQs:
+- Can autonomous vehicles utilize snow poles for self-localization on snow-covered roads?
+
+- Can snow poles be used to support the navigation system in autonomous vehicles during the winter?
+    - Are current object detection models capable of recognizing snow poles?
+    - Are snow pole designs consistent across Norway?
+    - Is it possible to implement snowy road and snow poles in CARLA?
+    - Combine the above models/implement with snow pole detection?
+
+    - Self-localization --> mapping current position to a HD map
+    - Generating a map based on 
+    
+    
+Kilder:
+- Current studies do not use snow poles when trying to detect the road
+
+Impact of weather on autonomous vehicles: https://ieeexplore.ieee.org/document/8666747
+AI Model for snow driving scenarios: https://ieeexplore.ieee.org/document/9420724
+Toward autonomous driving in artic areas: https://ieeexplore.ieee.org/document/9115644
+Model for autonomous steering on snow covered roads: https://ieeexplore.ieee.org/document/9413109
+Drivable path detection for driving in the snow: https://www.spiedigitallibrary.org/conference-proceedings-of-spie/11748/2587993/Drivable-path-detection-using-CNN-sensor-fusion-for-autonomous-driving/10.1117/12.2587993.full?SSO=1
+Improving lateral autonomous driving in snow-wet environments: https://ieeexplore.ieee.org/document/8957268
+Concept study of self-localization using snow poles: https://link.springer.com/article/10.1007/s42154-019-00061-5
+   - Uses lazers instead of cameras/lidar?
+RGB-thermal image segmentation for snowy road environment: https://ieeexplore.ieee.org/document/9512708
+  
+  
+
+
+\end{comment}

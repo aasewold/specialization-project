@@ -3,7 +3,41 @@
 
 % The results chapter should simply present the results of applying the methods presented in the method chapter without further ado. This chapter will typically contain many graphs, tables, etc. Sometimes it is natural to discuss the results as they are presented, combining them into a "Results and Discussion" chapter, but more often they are kept separate.
 
-\section{Experiment 1: Evaluating TransFuser with pre-trained parameters}
+
+In this paper we perform three experiments.
+First, we establish a baseline 
+by evaluating TransFuser using the published ensamble of three sets of weights on the \textit{Longest6} benchmark
+as described in \autoref{sec:evaluation}.
+Then, using the original dataset available online \todo{cite?},
+we train TransFuser to produce three new sets of weights from scratch,
+using a different random seed for each set of weights.
+We then perform both an evaluation of TransFuser using one of these sets of weights alone,
+and and evaluation of TransFuser using an ensamble of all three sets of weights.
+Using the same containerized environment for all of these experiments ensures that the results are comparable,
+but for curiosity we also compare the results with the published results in \cite{transfuser-pami}.
+
+We also perform qualitative analysis of the results by visually comparing the driving performance
+with the published videos\footnote{\url{https://www.youtube.com/playlist?list=PL6LvknlY2HlQG3YQ2nMIx7WcnyzgK9meO}}
+showcasing the original TransFuser's behaviour on this benchmark.
+
+
+\section{Experiment 1: TransFuser with original ensamble of three sets of weights}
+\label{sec:experiment1}
+
+We evaluate TransFuser on the Longest6 benchmark following the evaluation instructions at\footnote{
+\url{https://github.com/autonomousvision/transfuser/\#evaluation}}.
+Specifically,
+we use Carla version 0.9.13 and our TransFuser code adapted to this version,
+and run the evaluation program using the pre-trained parameters available at\footnote{
+\url{https://github.com/autonomousvision/transfuser/\#pretrained-agents}}.
+Carla is run headlessly inside a Docker container,
+and inside another Docker container we evaluate TransFuser
+by setting the environment variable \texttt{TEAM\_AGENT} to \texttt{team\_code\_transfuser/submission\_agent.py}
+and running the script \texttt{leaderboard/scripts/local\_evaluation.sh}.
+The results are then processed using the script \texttt{tools/result\_parser.py},
+
+
+\subsection{Results}
 
 The results from experiment 1 are shown in \autoref{tab:results:exp1}.
 
@@ -18,7 +52,34 @@ The results from experiment 1 are shown in \autoref{tab:results:exp1}.
 \end{table}
 
 
-\section{Experiment 2: Evaluating TransFuser with re-trained parameters}
+\subsection{Discussion}
+
+Discussion
+
+
+\section{Experiment 2: TransFuser with one set of weights trained from scratch}
+\label{sec:experiment2}
+
+To get familiar with the training procedure and requirements,
+we perform one full training run using the TransFuser dataset and randomly initialized weights.
+We download the original dataset and prepare a Docker container with the required dependencies.
+Then, we run the provided script \texttt{team\_code\_transfuser/train.py} to train our own TransFuser.
+The model is trained with the same parameters as specified in \cite{transfuser-pami}.
+Using two Nvidia A100 GPUs, this translates to approximately 40 hours.
+
+Using the trained model weights,
+we then apply the same procedure as in section \ref{sec:method:experiment1}
+to evaluate the agent's performance.
+
+As pointed out in \cite{transfuser-pami},
+agent performance when training with imitation learning
+can be prone to initial weight initialization.
+We therefore, like the TransFuser authors,
+train multiple models with different seeds to measure variance in the performance,
+and also evaluate the performance of an ensemble of these different models.
+
+
+\subsection{Results}
 
 The results from experiment 2 are shown in \autoref{tab:results:exp2}.
 
@@ -32,3 +93,23 @@ The results from experiment 2 are shown in \autoref{tab:results:exp2}.
     \caption{Results from experiment 2.}
     \label{tab:results:exp2}
 \end{table}
+
+
+\subsection{Discussion}
+
+Discussion
+
+
+\section{Experiment 3: TransFuser with ensamble of three sets of weights trained from scratch}
+\label{sec:experiment3}
+
+Intro
+
+\subsection{Results}
+
+Results
+
+
+\subsection{Discussion}
+
+Discussion

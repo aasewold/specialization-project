@@ -13,17 +13,20 @@
 ##SBATCH --exclusive
 
 cd ${SLURM_SUBMIT_DIR}
-echo "Jobbnummer: ${SLURM_JOB_ID}"
-echo "Task-id innad i array: ${SLURM_ARRAY_TASK_ID}"
+echo "Job id: ${SLURM_JOB_ID}"
+echo "Task id: ${SLURM_ARRAY_TASK_ID}"
+
+export CARLA_PORT=$((65000+${SLURM_ARRAY_TASK_ID}))
+export CARLA_SIF=/cluster/apps/dev/carla/carla_latest.sif
+
+# ---
 
 mkdir worker-${SLURM_ARRAY_TASK_ID}
 cd worker-${SLURM_ARRAY_TASK_ID}
 
-export CARLA_PORT=65005
-
 echo Starting server
 singularity exec --nv \
-  /cluster/apps/dev/carla/carla_latest.sif \
+  $CARLA_SIF \
   /home/carla/CarlaUE4.sh \
     -RenderOffScreen \
     -carla-rpc-port=$CARLA_PORT \
@@ -33,7 +36,7 @@ CARLA_PID=$!
 
 sleep 10
 echo Starting client
-singularity run --nv --pwd /code ../carlo.sif python -m src.scripts.idun "$(pwd)"
+singularity run --nv --pwd /code $CLIENT_SIF $CLIENT_COMMAND
 
 echo Killing $CARLA_PID
 kill $CARLA_PID

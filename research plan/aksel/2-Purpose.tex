@@ -1,0 +1,43 @@
+\subsection*{Purpose}
+Today, multiple car manufacturers are developing self-driving vehicles (SDVs) \cite{tesla:autopilot}\cite{waymo:home}\cite{honda:autonomous}.
+SDVs come in many variants,
+and are often classified using the SAE International Levels of Automation \cite{sae:levels}.
+Today's cars commonly include simple driver assistants like Cruise Control \cite{wikipedia:acc},
+which corresponds to level 1.
+At level 2, the system is able to control both steering and acceleration simultaneously.
+Several manufacturers are currently working on producing level 3 capable SDVs \cite{honda-level3, mercedes-level3},
+which is characterized by the ability for the driver pay attention to other activities,
+for instance watching a movie.
+
+But with higher levels comes greater risk,
+due to the reduction of human oversight.
+In one survey concerning SDVs,
+Boston Consulting Group report that "Concerns About the Safety of SDVs Are a Significant Hurdle" for adoption \cite{bcg:survey}.
+Another study shows that people generally demand safer-than-human driving
+before they trust SDVs on public infrastructure \cite{NEES201961}.
+% Thus, to unlock the full market potential of SDVs, manufacturers have to convince the general public of SDVs' safety.
+
+Unfortunately, these strict criteria are not yet met.
+Collision report data from SDVs in California reveal a crash rate that is three to five times that of human drivers \cite{10.1115/1.4051779}.
+As the authors note, these SDVs even have the benefit of only driving in the ideal weather conditions of sunny California.
+Since sensor data quality can be significantly degraded by rainy or snowy conditions \cite{goberville2020analysis},
+it is fair to assume that the relative collision rate would be even worse in these conditions.
+
+Thus, motivated by the current lack of sufficient safety in SDVs,
+the purpose of this research is to evaluate and improve the safety of SDVs.
+We choose to focus on improving safety in harsh winter conditions
+to offset the imbalance of current research in clear conditions.
+Specifically,
+we intend to evaluate and compare the deep learning-based autonomous driver TransFuser \cite{transfuser:pami}
+in both snowy and clear conditions in the CARLA simulator \cite{Dosovitskiy17}.
+We modify TransFuser to recognize the current weather conditions
+and automatically apply weather-dependent safety rules to improve it's safety score.
+
+With this objective in mind,
+we propose the following research questions:
+\begin{itemize}
+    \item \textbf{RQ 1.1} How does the original TransFuser (model \textbf{A}) perform when driving in adverse weather conditions?
+    \item \textbf{RQ 1.2} How does a re-trained TransFuser (model \textbf{B}) perform after being trained on data containing adverse weather conditions?
+    \item \textbf{RQ 2.1} Can a modified TransFuser trained to predict weather conditions (model \textbf{C}) accurately recognize which conditions it is currently driving in?
+    \item \textbf{RQ 2.2} Can weather-specific safety constraints improve the safety of the agent when driving in adverse weather conditions?
+\end{itemize}

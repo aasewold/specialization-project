@@ -1,0 +1,121 @@
+\section{Training and Evaluation on \nap}
+\label{app:sec:nap02}
+
+As previously mentioned,
+\nap is a bare-bones host with
+96 logical CPU cores,
+two NVIDIA A100-80G GPUs
+and 512GB RAM.
+Docker is fully set up and functional with the GPUs,
+thus the platform is ideal for development and small training jobs.
+This section describes required steps to perform training and evaluation on this host.
+
+\subsection{Connecting}
+
+\nap is available on the domain \texttt{nap02.idi.ntnu.no}
+when connected to NTNU's network, either physically or through VPN.
+Access can be requested from NTNU NAPlab,
+after which it is possible to log in over SSH using your Feide username and password.
+
+With SSH access,
+one can also utilize Visual Studio Code's support for connecting to remote hosts,
+which has been our main method to connect and develop on \nap.
+
+After first connecting to the host with SSH,
+we clone the GitHub repository 
+and change into the directory:
+\begin{lstlisting}[language=bash]
+git clone git@github.com:aasewold/transfuser.git
+cd transfuser
+\end{lstlisting}
+All further instructions assume \texttt{transfuser} to be the current working directory.
+
+\subsection{Docker}
+
+We containerized TransFuser using Docker,
+which causes all dependencies to be isolated from the host OS.
+All files related to Docker are found under the \texttt{docker/}-folder,
+including the \texttt{Dockerfile} that defines the environment TransFuser runs in.
+We base the Docker image on \texttt{pytorch/pytorch:1.13.0-cuda11.6-cudnn8-runtime}
+to ensure PyTorch and a compatible CUDA installation were available,
+and then install the rest of TransFuser's dependencies using a \texttt{requirements.txt}-file.
+
+The two scripts \texttt{docker/build.sh} and \texttt{docker/run.sh}
+assist in building and running the TransFuser Docker container, respectively.
+Especially to run the container requires specific care
+to ensure the container has access to GPUs, the training dataset, and other resources.
+
+Since the Docker images on \nap are shared across all users,
+we prefix all generated image tags with the username of the logged in user,
+thus preventing overwriting other users' images.
+This functionality is implemented in \texttt{docker/\_init.sh},
+and imported into other scripts as required.
+
+\subsection{Training}
+
+To train TransFuser using the original dataset,
+the dataset was downloaded and extracted to
+\texttt{/data/datasets/transfuser}.
+Folders to store training and evaluation results were created,
+and symbolic links placed into the current directory:
+\begin{lstlisting}[language=bash]
+mkdir -p ~/work/transfuser/{logs,models,results}
+ln -s ~/work/transfuser/logs .
+ln -s ~/work/transfuser/models .
+ln -s ~/work/transfuser/results .
+\end{lstlisting}
+
+We then built the Docker image by running the script \texttt{docker/build.sh}.
+Once this is completed,
+start a \texttt{screen} session with a suitable session name
+to let the training continue after you disconnect:
+\begin{lstlisting}[language=bash]
+screen -S train-transfuser
+\end{lstlisting}
+
+We enter the TransFuser Docker container by running the script \texttt{docker/run.sh}.
+Inside the container,
+we run the script \texttt{scripts/train\_single.sh} to train using a single GPU,
+or \texttt{scripts/train\_multi.sh} to train using all available GPUs.
+To ensure that the training starts successfully,
+we wait until the first few iterations complete.
+
+We then detach from the \texttt{screen}-session,
+using the keyboard combination \texttt{Ctrl+A, D},
+and disconnect the SSH connection.
+Later, to verify all is well,
+we list the currently running sessions with \texttt{screen -ls},
+and re-attach to the named session with \texttt{screen -r train-transfuser}.
+
+Inside a separate \texttt{screen}-session
+we also run \texttt{TensorBoard} pointed at the \texttt{logs}-directory,
+which can then be accessed through a browser to view training progress and loss curves.
+To be able to access this website from our local computers,
+we connect to \nap using SSH,
+and SSH Tunnel the port \texttt{TensorBoard} is listening on,
+which is most likely port 6006.
+
+Trained parameters are saved to the \texttt{logs}-directory after every epoch,
+and when training is completed the weights are ready to be used for evaluation.
+
+\subsection{Evaluation}
+
+To evaluate TransFuser on the Longest6-benchmark,
+we developed the script \texttt{docker/eval.sh}
+which launches the CARLA simulator and a TransFuser container that runs the Longest6 benchmark.
+However, the evaluation code proved unstable and crashes after each of the 36 routes.
+Luckily it can be restarted where it left off,
+thus the script \texttt{docker/eval\_loop.sh}
+continuously restarts the evaluation until all routes are completed.
+
+To use this script,
+first create a new folder under \texttt{models/} with a name identifying the specific model.
+Then copy in or make symbolic links to all trained weights you wish to include in the ensemble,
+and also copy the \texttt{args.txt}-file belonging to one of the weights.
+Modify the paths at the top of the script to target the model,
+then launch the script in a \texttt{screen}-session to detach it from the SSH session.
+Results are saved in a JSON-file under the directory of the model.
+
+\subsection{Analysis}
+
+\todo[inline]{use result\_parser.py to do something cool}
