@@ -7,7 +7,7 @@ The field of autonomous driving has seen great progress since the first computer
 
 The United Nations Economic Commission for Europe (UNECE) publishes every two years statistics of road traffic accidents in Europe and North America \cite{UNECE-traffic-accidents-2021}. Their latest release show that almost 100,000 people died as a result of road traffic accidents, which equals to an average of 270 people per day. Together with the World Health Organization (WHO) they clearly state that road traffic injuries are the leading cause of deaths for people aged 5-29 worldwide \cite{WHO-road-safety-report}. This is a clear motivation for the development and deployment of autonomous vehicles. They could help reduce or even remove the effect of human driving errors, such as driver inattention, distractions, false assumptions and ignoring speed limits, which are the cause of around 92 \% of road accidents \cite{towards-connected-autonomous-driving}.
 
-\todo{maybe add a paragraph about the environment and economical benefits of AVs}
+% \todo{maybe add a paragraph about the environment and economical benefits of AVs}
 
 % Other potential benefits of a deployment of autonomous vehicles include ... 
 
@@ -34,8 +34,8 @@ The goal of this specialization project is to set up CARLA on our own hardware a
     %\item \textbf{RQ3:} How does our local evaluation compare to the results from \textcite{transfuser-pami}?
 
     % eventuelt  -->  +1 
-    \item \textbf{RQ1:} How can we utilize the available compute resources to train TransFuser?
-    \item \textbf{RQ2:} How does TransFuser perform using the adapted training method?
+    \item[\textbf{RQ1:}] How can we utilize the available compute resources to train TransFuser?
+    \item[\textbf{RQ2:}] How does TransFuser perform using the adapted training method?
     % \item \textbf{RQ3:} Which mistakes does TransFuser do (and how can we fix them)? (ref future work)
 \end{itemize}
 
@@ -52,17 +52,19 @@ gammelt:
 
 
 \section{Research Method}
-This specialization project is based on an experimental research method. We will conduct experiments using the \textit{longest6} benchmark in the CARLA simulator. The benchmark consists of 36 routes from six different towns, where each route has a unique environmental condition based on a combination of weather and lighting conditions.
+This specialization project is based on an experimental research method. We will conduct experiments using the Longest6 benchmark in the CARLA simulator. The benchmark consists of 36 routes from six different towns, where each route has a unique environmental condition based on a combination of weather and lighting conditions.
 
-We will mainly use a quantitative analysis of the results. The performance metrics \textit{longest6} outputs are route completion, infraction score, driving score and infractions per kilometer \cite{transfuser-pami}, all which can be used to compare the different experiments. Additionally we wil also perform a qualitative analysis on the video output from the evaluation runs. This will be done by inspecting the first-person and birds-eye views of the autonomous vehicle while it is driving through the scenarios.
+We will mainly use a quantitative analysis of the results. The performance metrics Longest6 outputs are route completion, infraction score, driving score and infractions per kilometer \cite{transfuser-pami}, all which can be used to compare the different experiments. Additionally we will also perform a qualitative analysis on the video output from the evaluation runs. This will be done by inspecting the first-person and birds-eye views of the autonomous vehicle while it is driving through the scenarios.
 
 \section{Contributions}
-As this specialization project is mainly a theoretical preparation for the master's thesis, contributions are not in focus. Still, the project has produced the following contributions, which can be found on our GitHub:\footnote{\url{https://github.com/orgs/aasewold}}
+As this specialization project is mainly a preparation for the master's thesis, contributions are not in focus. Still, the project has produced the following contributions, which can be found on our GitHub\footnote{\url{https://github.com/orgs/aasewold}}:
 
 \begin{itemize}
     \item An updated TransFuser codebase which works on the newest version of CARLA (0.9.13).
+    \item Methodology to use the CARLA simulator on NTNU's HPC cluster Idun.
+    \item Methodology to train and evaluate TransFuser locally.
     \item Python stub files for the CARLA Python API. These allow code editors to show type hints and auto-completion for classes and methods imported from the CARLA package.
-    \item intruksjoner IDUN osv.
+    \item Carlo, a Python client which connects to and interacts with the CARLA simulator.
 \end{itemize}
 
 

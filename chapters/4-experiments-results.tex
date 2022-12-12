@@ -6,110 +6,302 @@
 
 In this paper we perform three experiments.
 First, we establish a baseline 
-by evaluating TransFuser using the published ensamble of three sets of weights on the \textit{Longest6} benchmark
-as described in \autoref{sec:evaluation}.
-Then, using the original dataset available online \todo{cite?},
+by evaluating TransFuser using the published ensemble of three sets of weights on the Longest6 benchmark
+as described in \cref{sec:evaluation}.
+Then, using the original dataset available online\footnote{\url{https://github.com/autonomousvision/transfuser\#dataset-and-training}},
 we train TransFuser to produce three new sets of weights from scratch,
 using a different random seed for each set of weights.
-We then perform both an evaluation of TransFuser using one of these sets of weights alone,
-and and evaluation of TransFuser using an ensamble of all three sets of weights.
+We then perform evaluations of TransFuser
+both using one of these sets of weights alone,
+and using an ensemble of all three sets of weights.
 Using the same containerized environment for all of these experiments ensures that the results are comparable,
 but for curiosity we also compare the results with the published results in \cite{transfuser-pami}.
 
-We also perform qualitative analysis of the results by visually comparing the driving performance
-with the published videos\footnote{\url{https://www.youtube.com/playlist?list=PL6LvknlY2HlQG3YQ2nMIx7WcnyzgK9meO}}
-showcasing the original TransFuser's behaviour on this benchmark.
+% We also perform qualitative analysis of the results by visually comparing the driving performance
+% with the published videos\footnote{\url{https://www.youtube.com/playlist?list=PL6LvknlY2HlQG3YQ2nMIx7WcnyzgK9meO}}
+% showcasing the original TransFuser's behaviour on this benchmark.
 
 
-\section{Experiment 1: TransFuser with original ensamble of three sets of weights}
-\label{sec:experiment1}
 
-We evaluate TransFuser on the Longest6 benchmark following the evaluation instructions at\footnote{
-\url{https://github.com/autonomousvision/transfuser/\#evaluation}}.
-Specifically,
-we use Carla version 0.9.13 and our TransFuser code adapted to this version,
-and run the evaluation program using the pre-trained parameters available at\footnote{
-\url{https://github.com/autonomousvision/transfuser/\#pretrained-agents}}.
-Carla is run headlessly inside a Docker container,
-and inside another Docker container we evaluate TransFuser
-by setting the environment variable \texttt{TEAM\_AGENT} to \texttt{team\_code\_transfuser/submission\_agent.py}
-and running the script \texttt{leaderboard/scripts/local\_evaluation.sh}.
-The results are then processed using the script \texttt{tools/result\_parser.py},
+
+\section{Experiment 1: TransFuser with original ensemble of three sets of weights}
+\label{sec:exp1}
+In our first experiment, we evaluate TransFuser using a set of three pre-trained weights.
+
+\subsection{Setup}
+The pre-trained weights are downloaded from GitHub.\footnote{\url{https://github.com/autonomousvision/transfuser\#pretrained-agents}}
+We use CARLA version 0.9.13 and our TransFuser code adapted to this version,
+and run the evaluation script \texttt{docker/eval\_loop.sh}.
 
 
 \subsection{Results}
 
-The results from experiment 1 are shown in \autoref{tab:results:exp1}.
+The results from experiment 1 are shown in \cref{tab:exp1:results}.
+
+We note that the logs from the output contained a warning that the evaluation was performed using a
+Tesla Model 3 vehicle instead of the requested Lincoln MKZ 2017 vehicle.
 
 \begin{table}[]
     \centering
-    \begin{tabular}{c|c}
+    \begin{tabular}{|c|c|}
+        \hline
         \textbf{Metric} & \textbf{Result} \\ \hline
-        crashes & 1
+        Routes completed & 30 / 36 \\ \hline
+        Driving score & 6.84\% \\ \hline
+        Route completion & 82.3\% \\ \hline
+        Infraction penalty & 0.132 \\ \hline
+        Collisions with pedestrians & 0.085 \\ \hline
+        Collisions with vehicles & 7.3 \\ \hline
+        Collisions with layout & 0.37 \\ \hline
+        Red light infractions & 0.085 \\ \hline
+        Stop sign infractions & 0.51 \\ \hline
+        Off-road infractions & 0.37 \\ \hline
+        Route deviations & 0.0 \\ \hline
+        Route timeouts & 0.28 \\ \hline
+        Agent blocked & 0.20 \\ \hline
     \end{tabular}
-    \caption{Results from experiment 1.}
-    \label{tab:results:exp1}
+    \caption{Results from experiment 1. Infractions are given in counts per kilometer driven.}
+    \label{tab:exp1:results}
 \end{table}
+
+We see that only 30 out of 36 routes in the Longest6 benchmark were completed.
+The last 6 routes use the map called "Town06",
+which was not present in our CARLA Docker environment,
+thus the evaluation script was unable to load and evaluate these routes.
+
+The remaining metrics are calculated as averages of the 
+individual metrics on the 30 completed routes.
+The various infractions are counts per kilometer driven.
+We note a fairly high route completion score,
+but unfortunately a severe infraction penalty
+which causes the driving score to be very low.
+By far the most common infraction is collision with other vehicles.
+
+The locations of the various infractions can be seen in \cref{fig:exp1:town02}.
+We note that most infractions occur in areas close to intersections or turns,
+while the long straight road segments see almost no infractions.
+A video of this experiment can be found here: \url{https://youtu.be/QyVsUrQynPU}. It contains the three
+RGB cameras used as input to the model as well as an extra bird's-eye view used 
+only for qualitative inspection.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/results/exp1-town02.png}
+    \caption{Infractions during experiment 1 on The town02 map.
+    Red dots are collision with the scene geometry,
+    and blue with other vehicles.
+    The yellow dots indicate a red light infraction,
+    and the black dots mark places where the agent was permanently blocked.}
+    \label{fig:exp1:town02}
+\end{figure}
 
 
 \subsection{Discussion}
 
-Discussion
+Due to the missing data for the last 6 routes,
+we cannot claim an entirely valid comparison with this data and the results reported in \cite{transfuser-pami}.
+However, it is unavoidable to see that the driving score is much lower than the $61.18\%$ reported on the CARLA Leaderboard. \todo{cite?}
+The route completion score is similar to within a few percentage points,
+thus the main reason is the infraction penalty which is a factor of 5 worse than the value reported on the CARLA Leaderboard.
+Collision with vehicle infractions are the main cause of this penalty,
+with a much higher count of $7.3$ per km compared to the online $0.81$ per km.
+
+A possible reason for the increased collision count is the change of evaluation vehicle from
+the Lincoln MKZ 2017 to the Tesla Model 3.
+The vehicles may have different sizes and collision bounding boxes,
+thus the agent may mistakenly assume that it has greater margins to other vehicles and the terrain
+than it actually has.
+The vehicles may also present different driving dynamics
+which could further confuse the model.
+We hypothesize that the model would perform better if evaluated using the correct vehicle,
+and leave this evaluation for a future experiment.
+
+As noted, the agent incurs most infractions in intersections or turns.
+This indicates that these are difficult areas to navigate properly.
+These areas require both keeping track of traffic signals,
+reacting to other agents' behaviour,
+and knowing the ego-agent's vehicle dynamics.
+On the other hand,
+straight segments only require the skill to keep proper spacing to the cars in front.
+In our case even this skill isn't required,
+since our model drives much slower than the surrounding traffic,
+thus it will always have sufficient spacing in front to avoid collisions.
+The exception is when other cars are standing still waiting in a queue,
+in which case we do observe collisions,
+for instance the ones seen to the top right in the figure.
 
 
 \section{Experiment 2: TransFuser with one set of weights trained from scratch}
-\label{sec:experiment2}
+\label{sec:exp2}
+For our second experiment,
+we perform one full training run using the TransFuser dataset.
 
-To get familiar with the training procedure and requirements,
-we perform one full training run using the TransFuser dataset and randomly initialized weights.
-We download the original dataset and prepare a Docker container with the required dependencies.
+\subsection{Setup}
+We download the original dataset\footnote{\url{https://github.com/autonomousvision/transfuser\#dataset-and-training}} and prepare a Docker container with the required dependencies.
 Then, we run the provided script \texttt{team\_code\_transfuser/train.py} to train our own TransFuser.
 The model is trained with the same parameters as specified in \cite{transfuser-pami}.
-Using two Nvidia A100 GPUs, this translates to approximately 40 hours.
+Using two Nvidia A100 GPUs, this took approximately 40 hours.
 
 Using the trained model weights,
-we then apply the same procedure as in section \ref{sec:method:experiment1}
+we then apply the same procedure as in \cref{sec:exp1}
 to evaluate the agent's performance.
-
-As pointed out in \cite{transfuser-pami},
-agent performance when training with imitation learning
-can be prone to initial weight initialization.
-We therefore, like the TransFuser authors,
-train multiple models with different seeds to measure variance in the performance,
-and also evaluate the performance of an ensemble of these different models.
 
 
 \subsection{Results}
 
-The results from experiment 2 are shown in \autoref{tab:results:exp2}.
+The results from experiment 2 are shown in \cref{tab:exp2:results}.
+We observe the same substitution of vehicle as in experiment 1.
 
 \begin{table}[]
     \centering
-    \begin{tabular}{c|c}
+    \begin{tabular}{|c|c|}
+        \hline
         \textbf{Metric} & \textbf{Result} \\ \hline
-        crashes & 2 \\ \hline
-        driving on sidewalk & yes
+        Routes completed & 30 / 36 \\ \hline
+        Driving score & 4.27\% \\ \hline
+        Route completion & 63.6\% \\ \hline
+        Infraction penalty & 0.170 \\ \hline
+        Collisions with pedestrians & 0.10 \\ \hline
+        Collisions with vehicles & 9.2 \\ \hline
+        Collisions with layout & 0.49 \\ \hline
+        Red light infractions & 0.070 \\ \hline
+        Stop sign infractions & 0.38 \\ \hline
+        Off-road infractions & 3.0 \\ \hline
+        Route deviations & 0.035 \\ \hline
+        Route timeouts & 0.21 \\ \hline
+        Agent blocked & 0.45 \\ \hline
     \end{tabular}
     \caption{Results from experiment 2.}
-    \label{tab:results:exp2}
+    \label{tab:exp2:results}
 \end{table}
+
+As expected, only 30 routes are completed in this experiment as well, due to the same reason as in experiment 1.
+
+The locations of the various infractions can be seen in \cref{fig:exp2:town02}.
+We see high collision densities near turns and intersections,
+mostly with other vehicles.
+In this case we see streaks of collisions,
+where it seems like the agent continuously collides
+with the vehicle in front as both drives forward. 
+A video of this experiment can be found here: \url{https://youtu.be/YG6wwq1KRHM}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/results/exp2-town02.png}
+    \caption{Infractions during experiment 2 on the Town02 map.
+    Red dots are collision with the scene geometry,
+    and blue with other vehicles.
+    The yellow dots indicate a red light infraction,
+    and the black dots mark places where the agent was permanently blocked.}
+    \label{fig:exp2:town02}
+\end{figure}
 
 
 \subsection{Discussion}
 
-Discussion
+We note overall worse results than in experiment 1.
+The driving score is reduced as a consequence of lower route completion and worse infraction penalty.
+Notably, the collision rate has increased,
+and the agent drives more off-road.
+The routes also end with the agent being blocked by an obstacle more often. 
+
+Several reasons could be the cause of these results.
+For one, deep learning will produce different sets of weights when using different random seeds,
+which could result in a worse agent by pure chance.
+However, in this case we are comparing an ensemble of three models to a single model,
+thus the difference in performance could be due to the ensemble driving better and more consistently.
+
+The increased collision rate also seem to be the result of continuous collision between the ego-agent and the other vehicles.
+For instance, in the top right of \cref{fig:exp2:town02},
+the agent is waiting in a queue and rear-ends the vehicle in front
+every time the queue moves forward.
+This greatly inflates the collision count,
+and demonstrates a lack of proper spacing.
+Similar streaks are seen elsewhere in the map.
 
 
-\section{Experiment 3: TransFuser with ensamble of three sets of weights trained from scratch}
-\label{sec:experiment3}
+\section{Experiment 3: TransFuser with ensemble of three sets of weights trained from scratch}
+\label{sec:exp3}
+As pointed out in \cite{transfuser-pami},
+agent performance of deep-learning methods can be sensitive to initial weight initialization.
+We therefore train additional two sets of weights with different random seeds to obtain an ensemble of three sets of weights.
 
-Intro
+\subsection{Setup}
+The training is performed identically to experiment 2,
+and the evaluation identically to the previous two experiments.
+
 
 \subsection{Results}
 
-Results
+\begin{table}[]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Metric} & \textbf{Result} \\ \hline
+        Routes completed & 30 / 36 \\ \hline
+        Driving score & 1.00\% \\ \hline
+        Route completion & 3.63\% \\ \hline
+        Infraction penalty & 0.308 \\ \hline
+        Collisions with pedestrians & 0.0 \\ \hline
+        Collisions with vehicles & 46.1 \\ \hline
+        Collisions with layout & 29.98 \\ \hline
+        Red light infractions & 0.73 \\ \hline
+        Stop sign infractions & 0.0 \\ \hline
+        Off-road infractions & 41.4 \\ \hline
+        Route deviations & 0.0 \\ \hline
+        Route timeouts & 2.19 \\ \hline
+        Agent blocked & 19.74 \\ \hline
+    \end{tabular}
+    \caption{Results from experiment 3.}
+    \label{tab:exp3:results}
+\end{table}
+
+In this experiment too, the model is evaluated using the Tesla Model 3.
+We also see the expected failure to run the last 6 routes.
+The driving score is very low, only 1\%,
+due to a combination of a very low route completion and the infraction penalty.
+Notably, the agent has a very high collision rate with vehicles and the scene geometry,
+which causes it to get blocked in each of the 30 routes.
+We also note an increase in the rate of red light infractions,
+and a higher percentage of off-road driving.
+
+The locations of the various infractions can be seen in \cref{fig:exp3:town02}.
+In this experiment we observe fewer collisions in total,
+but an increased count of the agent getting stuck.
+Note that the agent gets stuck at places where it collides with either the scene geometry or other vehicles. A video of this experiment can be found here: \url{https://youtu.be/ZREUj_nCAEA}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/results/exp3-town02.png}
+    \caption{Infractions during experiment 3 on The town02 map.
+    Red dots are collision with the scene geometry,
+    and blue with other vehicles.
+    The black dots mark places where the agent was permanently blocked.}
+    \label{fig:exp3:town02}
+\end{figure}
 
 
 \subsection{Discussion}
 
-Discussion
+This experiment demonstrated very bad driving capabilities.
+The agent consistently collides with other vehicles or obstacles,
+and thus gets stuck, unable to complete the route.
+As a results, the route completion is drastically lower than in the other two experiments,
+and the collision rates are far higher.
+The increase in red-light and off-road infractions
+also indicate a general decline in driving performance.
+
+It is unclear why the agent performs so poorly.
+Experiment 1 also uses an ensemble of agents and gives reasonable results,
+and experiment 2 uses custom trained weights which also works reasonably well.
+There are no apparent differences in the evaluation setup either which could explain these discrepancies.
+There is however one possibility that should be investigated,
+which is that the two other agents in our ensemble could perform very poorly individually,
+and thus adversely affect the ensemble.
+To evaluate these agents individually is left for future experiments.
+
+As seen from \cref{fig:exp3:town02},
+there are much fewer collisions in total than in the previous experiments.
+This is due to the agent colliding once and getting stuck,
+and thus doesn't get the chance to increase its collision count further.
+In summary, this experiment did not produce an agent capable of driving well at all.

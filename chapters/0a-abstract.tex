@@ -1,3 +1,12 @@
 \chapter*{Abstract}
+The field of autonomous driving has seen great progress in recent years, but large-scale deployment of fully self-driving vehicles is still not currently present. Studies show that road traffic injuries are the main cause of death for people aged 5-29 worldwide, and that human driving errors are the cause of 92 \% of road accidents \cite{WHO-road-safety-report, towards-connected-autonomous-driving}. Self-driving vehicles could help reduce these accidents.
 
-TODO
+Motivated by this we will in this specialization project investigate a state-of-the-art model in the open-source autonomous driving simulator CARLA \cite{introducing-carla-paper}. More specifically we will look at a model proposed by \textcite{transfuser-pami} called TransFuser, which is one of the top performers on the CARLA Leaderboard \cite{carla-leaderboard}. The goal of this project is to set up CARLA on our own hardware and use it to train and evaluate TransFuser locally. This knowledge will then serve as a basis for our master thesis.
+
+TransFuser is an end-to-end model for autonomous driving utilizing behaviour cloning to reach safe point-to-point navigation in an urban setting. We use TransFuser's included benchmark to experiment with three different model setups locally.
+%This is done in an containerized environment to ensure comparability. 
+Our results show worse driving score than originally reported by TransFuser on the CARLA Leaderboard. One possible culprit is that we used the wrong vehicle type for training and evaluation, which was a result of upgrading the TransFuser code to the latest CARLA version.
+This upgrade could also have caused other unintended consequences.
+
+Even with these results we show that training a custom TransFuser agent and evaluating it on the latest CARLA version is possible on our own hardware. We have developed and documented tooling which will be useful in future experiments. Finally, we include multiple suggestions of future work based on the knowledge gained in this specialization project.
+

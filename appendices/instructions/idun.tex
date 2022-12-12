@@ -1,0 +1,87 @@
+\section{Running CARLA on Idun}
+\label{app:instructions:idun}
+
+This section details how to prepare and execute CARLA and a client on the Idun HPC cluster.
+As previously noted,
+Idun provides the Singularity container runtime instead of Docker.
+Luckily, this is not a major issue,
+since Docker images can easily be converted to Singularity images.
+In the following steps we prepare and execute Singularity images for both CARLA and a simple client.
+
+
+\subsection{CARLA}
+
+To make a Singularity image for CARLA,
+use the \texttt{build} command:
+\begin{lstlisting}
+singularity build carla.sif docker://carlasim/carla:0.9.13
+\end{lstlisting}
+
+This can then be executed using the following command:
+\begin{lstlisting}
+singularity exec --nv carla.sif /home/carla/CarlaUE4.sh -RenderOffScreen
+\end{lstlisting}
+Note the \texttt{--nv} flag which makes NVIDIA GPUs available in the container,
+as well as \texttt{-RenderOffScreen} which prevents the CARLA simulator from attempting to open any GUI windows.
+Optionally,
+append \texttt{-carla-rpc-port=65001}
+to cause CARLA to be available on port 65001 instead of the default port 2000.
+This can be utilized to run several CARLA instances simultaneously using different ports.
+
+
+\subsection{Client}
+
+To demonstrate how a client (such as TransFuser) might connect,
+we utilize a simple client we call Carlo, which is available on GitHub.
+The repository includes a Dockerfile to build a Docker image,
+however we cannot build this image on Idun directly due to the lack of Docker.
+Therefore, we build the Singularity image locally
+before transferring it to Idun.
+
+Begin by cloning the repository:
+\begin{lstlisting}
+git clone git@github.com:aasewold/carlo.git
+\end{lstlisting}
+
+Enter the directory and build the Docker image:
+\begin{lstlisting}
+cd carlo
+docker buildx build . -t carlo:latest
+\end{lstlisting}
+
+Once this is completed,
+convert the image to a Singularity image:
+\begin{lstlisting}
+singularity build carlo.sif docker-daemon://carlo:latest
+\end{lstlisting}
+
+Finally, transfer this file to Idun using your preferred tool:
+\begin{lstlisting}
+rsync -zhP carlo.sif idun-login1.hpc.ntnu.no:carlo.sif
+\end{lstlisting}
+
+Now, connect to Idun using SSH,
+and execute the Carlo container,
+specifying the same CARLA port as used previously:
+\begin{lstlisting}
+export CARLA_PORT=2000
+singularity exec --pwd /code carlo.sif python -m src.scripts.idun $PWD/carlo_output
+\end{lstlisting}
+
+The script will connect to the CARLA simulator,
+spawn some vehicles in autopilot,
+and save some camera sensor data to the folder \texttt{carlo\_output}.
+
+A similar approach can be used to build and execute
+a Singularity image for TransFuser.
+
+
+\subsection{Slurm}
+
+What remains is to perform these steps as part of a batch job using Slurm.
+An example Slurm file is given below
+that spawns 10 workers
+each consisting of a CARLA server and a Carlo client,
+launched across different nodes and dynamically assigning
+port numbers to prevent conflicts.
+\lstinputlisting{listings/idun/carla.slurm}

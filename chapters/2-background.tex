@@ -4,7 +4,7 @@
 % \section{NAPLab Car}
 
 \section{CARLA Simulator}
-\acrfull{carla} is an open source photo-realistic simulator for autonomous driving research \cite{introducing-carla-paper}. It was developed from the ground up to support development, training and validation of autonomous urban driving systems. CARLA provides free open digital assets such as urban layouts, buildings and vehicles. Additionally the simulator includes a suit of sensors, environmental conditions, full control over of static and dynamic actors, a traffic manager and more.
+\acrfull{carla} is an open-source photo-realistic simulator for autonomous driving research \cite{introducing-carla-paper}. It was developed from the ground up to support development, training and validation of autonomous urban driving systems. CARLA provides free open digital assets such as urban layouts, buildings and vehicles. Additionally the simulator includes a suit of sensors, environmental conditions, full control over of static and dynamic actors, a traffic manager and more.
 
 CARLA is built with a scalable client-server architecture in mind. The server uses Unreal Engine \cite{unrealengine} as a simulation foundation and is responsible for tasks such as scene and sensor rendering, computation of realistic physics, actor updates and providing updated world information to the connected clients. Multiple clients can be connected to the CARLA server, and these send commands to the server and receive updated world information in return. Example commands are traffic generation, spawning new actors, controlling vehicles and setting weather conditions.
 
@@ -48,10 +48,6 @@ depending on the specific problem and dataset.
 In this section,
 we will explore some of the key concepts and techniques used in deep learning for self-driving vehicles.
 
-https://arxiv.org/abs/1704.05519  \cite{computer-vision-for-autonomous-vehicles}
-
-https://ieeexplore.ieee.org/document/9700770 \cite{survey-on-end-to-end-techniques}
-
 
 \subsection{Supervised learning}
 \label{sec:superviser-learning}
@@ -76,7 +72,7 @@ This process is repeated until a satisfactory low error is achieved.
 
 \subsection{Imitation Learning}
 
-Imitation Learning (IL) learning is an approach to training autonomous agents
+\acrfull{imitation-learning} learning is an approach to training autonomous agents
 where the agents are trained to imitate the behaviour of an expert agent.
 The expert agent is used to determine the best course of action $a$ when exposed to different states $s$,
 which results in sequences of state-action pairs $(s, a)$.
@@ -86,7 +82,7 @@ Within the IL regime,
 there are three main algorithms for learning,
 which we will explore in further detail.
 
-Behavioural Cloning (BC) is one approach where the state-action pairs
+\acrfull{behavioural-cloning} is one approach where the state-action pairs
 are treated as inputs to a supervised learning algorithm.
 Given an expert policy $\pi^*$ that one wishes to imitate,
 first generate a dataset $\mathcal{D}$
@@ -94,7 +90,7 @@ with $N$ samples $\mathcal{D}_i = (s^*_i, a^*_i), i = 1 \dots N$
 from the expert policy distribution $d^{\pi^*}$.
 Then, using supervised learning,
 recover an approximate policy $\pi_\theta$
-that minimizes the training loss $\mathcal{L}$
+that minimizes the training loss $\mathcal{L}$:
 $$
 \pi_\theta =
     \argmin_{\pi_{\hat{\theta}}}
@@ -112,22 +108,33 @@ This can cause the agent to choose actions which bring it further from its known
 which can result in cascading and catastrophic failure.
 Using a self-driving vehicle as an example,
 consider an expert agent which always manages to drive in the center of its lane.
-An BC agent trained to mimic this expert may by chance and error end up slightly away from the center,
+A BC agent trained to mimic this expert may by chance and error end up slightly away from the center,
 causing it to experience states never before seen during training.
 The BC agent is not trained to handle this state,
 which may cause it to drift further and further away from the lane center.
 
+To mitigate this,
+one method is to increase the variance of the states in the training such.
+For instance,
+instead of always letting the expert agent decide how the vehicle moves,
+random actions could be chosen with a probability $\epsilon$,
+and the actions the expert chooses to correct these mistakes are saved as training data.
+Another approach is to continuously run the imitating agent to generate states
+following the imitation agent's distribution $d^{\pi_{\theta}}$,
+but still query the expert for the correct actions.
 
-Supervised learning
-State-action trajectories
-No hand-made reward function
+This is the idea behind Direct Policy Learning,
+where we include the expert in the training process interactively
+to correct the imitating agent's errors.
+The requirement to have an interactive expert is often costly and not always feasible,
+for instance when using a human expert,
+but in simulated cases it is often possible.
+An example of Direct Policy Learning
+is the DAgger algorithm \cite{dagger},
+which continuously expands the training dataset
+by querying the expert agent for corrections to the imitating agent's choices.
 
-Behavioural Cloning
-- offline expert generates state-action pairs (s, a)
-- supervised learning on (s, a)
-- generally assumes (s1, a1) to be independent from (s2, a2) - NOT valid
-    - bad generalisation to unseen states, need large datasets and good variation
-
+\begin{comment}
 Direct Policy Learning
 - interactive expert
 - for each state s query expert to retrieve action a
@@ -151,7 +158,14 @@ Inverse Reinforcement Learning
     \item Adversarial Imitation / Inverse Reinforcement Learning
 \end{enumerate}
 
-\subsection{Reinforcement Learning}
+%\subsection{Reinforcement Learning}
+%\todo[inline]{Kan kanskje sløyfes siden TransFuser ikke bruker RL? Men er kanskje nice for å sammenligne med IL...}
+\end{comment}
+
+The last regime is the \acrfull{inverse-reinforcement-learning} method.
+Instead of using supervised learning to teach the imitating agent,
+IRL attempts to deduce a Reward function from the dataset,
+and then train the imitating agent using this Reward function and Reinforcement Learning.
 
 \subsection{Computer Vision}
 Computer vision is a field of artificial intelligence that focuses on interpreting visual data from the physical world. It involves the development of systems that can automatically extract and analyze information from visual sources, such as images and videos. This allows computers to perform tasks such as recognizing objects, detecting faces, and understanding scenes in real-time. In the context of autonomous driving, computer vision plays a crucial role in enabling self-driving cars to perceive and understand their surroundings in order to navigate safely and efficiently.
@@ -190,6 +204,7 @@ As discussed in a recent paper comparing end-to-end techniques, there is an ongo
 \label{sec:related-work}
 
 \subsection{TransFuser (2021)}
+\label{sec:related-work:transfuser}
 TransFuser, ranked 2nd when published and currently ranked 4th on the CARLA Leaderboard,
 is an end-to-end approach to autonomous driving in the CARLA simulator
 \cite{transfuser-pami, transfuser-cvpr, pwc-carla}.
@@ -208,9 +223,9 @@ During training, TransFuser optimizes a multi-task loss consisting of not only p
 but also predicting depth and semantic segmentation images,
 as well as a top-down HD-map and bounding boxes vehicle detection.
 
-\textcite{transfuser-pami} also propose a new benchmark for autonomous driving called \textit{Longest6}. This involves longer routes, increased traffic density and more challenging pre-crash scenarios than existing closed-loop driving benchmarks. Another advantage of this benchmark over the official CARLA Leaderboard is that it can be used for evaluation on local resources without the online platform's computation budget restrictions.
+\textcite{transfuser-pami} also propose a new benchmark for autonomous driving called Longest6. This involves longer routes, increased traffic density and more challenging pre-crash scenarios than existing closed-loop driving benchmarks. Another advantage of this benchmark over the official CARLA Leaderboard is that it can be used for evaluation on local resources without the online platform's computation budget restrictions.
 
-As this specialization project is based on the TransFuser model, a more detailed description can be found in  \cref{sec:transfuser}.
+As this specialization project is based on TransFuser, a more detailed description of the model and benchmark can be found in \cref{sec:transfuser} and \cref{sec:evaluation} respectively.
 
 
 \subsection{Learning from All Vehicles (2022)}

@@ -1,3 +1,11 @@
 \chapter*{Sammendrag}
 
-TODO
+% æsj norsk er vanskelig
+
+Fagfeltet rundt autonome kjøretøy har sett stor fremgang de siste årene, men storskala distribusjon av fullstendig selvkjørende biler finnes fortsatt ikke. Studier viser at trafikkulykker er hovedårsaken til dødsfall for personer i alderen 5-29 år over hele verden, og at menneskelige feil er årsaken til 92 \% av trafikkulykkene \cite{WHO-road-safety-report, towards-connected-autonomous-driving}. Selvkjørende biler kan bidra til å redusere disse ulykkene.
+
+Motivert av dette vil vi i dette fordypningsprosjektet undersøke en «state-of-the-art»-modell i en simulator for autonome kjøretøy med åpne kildekode kalt CARLA \cite{introducing-carla-paper}. Vi vil mer spesifikt se på en modell presentert av \textcite{transfuser-pami} kalt TransFuser, som er blant modellene med best resultat på CARLA Leaderboard \cite{carla-leaderboard}. Målet med dette prosjektet er å sette opp CARLA på egen maskinvare og bruke det til å trene og evaluere TransFuser lokalt. Denne kunnskapen vil fungere som grunnlag for masteroppgaven vår.
+
+TransFuser er en ende-til-ende modell for autonom kjøring basert på atferdskloning som har som mål å lære sikker punkt-til-punkt-navigasjon i urbane omgivelser. Vi bruker TransFusers inkluderte evalueringsverktøy for å eksperimentere med tre forskjellige modelloppsett lokalt. Resultatene våre viser dårligere kjøreegenskaper enn hva TransFuser opprinnelig rapporterte på CARLA Leaderboard. En mulige grunn til dette er at vi brukte feil type bil under trening og evaluering, noe som skjedde på grunn av at vi oppgraderte TransFuser sin kodebase til siste versjon av CARLA. Denne oppgraderingen kan også ha forårsaket andre uforutsette konsekvenser.
+
+Selv med disse resultatene viser vi at trening og evaluering av en tilpasset TransFuser-agent på den siste versjonen av CARLA er mulig på egen maskinvare. Vi har utviklet og dokumentert verktøy som vil være nyttig i fremtidige eksperimenter. Til slutt nevner vi flere forslag til fremtidig arbeid basert på kunnskap tilegnet under dette fordypningsprosjektet.  

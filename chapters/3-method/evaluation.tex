@@ -1,4 +1,16 @@
 \section{Evaluation}
 \label{sec:evaluation}
+For evaluating the TransFuser model we used the Longest6 Benchmark introduced in the same paper by \textcite{transfuser-pami}. Their benchmark share several similarities with the official CARLA Leaderboard \cite{carla-leaderboard}, but can be used for evaluation on local resources without the online platform's computation budget restrictions. To counteract the imbalance of routes per town in the CARLA Leaderboard, Longest6 uses the six longest routes per town chosen from a total of 76 routes across six towns. The result is 36 routes with an average length of 1.5 kilometers, which is similar to the average route length of the CARLA Leaderboard. The benchmark additionally ensures high density traffic, uses unique  combinations of weather and lighting conditions for each route, and include some of CARLA Leaderboard's adversarial scenarios.
 
-Longest6 blabla driving score bla safety score bla route completion blabla.
+Longest6 report several metrics during the benchmark, all inspired by the official CARLA Leaderboard. The first is Route Completion (RC), which is the percentage of route distance completed averaged across all routes. The second metric is Infraction Score (IS). By tracking several types of infractions the IS is reduced from an ideal score of 1.0 each time an infraction is committed. The infractions tracked by Longest6 are collisions with pedestrians, vehicles and static elements, running a red light, off-road driving, route deviations, timeouts and the vehicle getting stuck.
+Note that the authors chose to omit stop sign infractions due to them not observing any infractions of this kind in their testing.
+Longest6 also uses the tracked infractions to report infractions per kilometer. Finally, using IS they also report the Driving Score (DS), which is the main metric of the CARLA Leaderboard. It is calculated as the product of the route completion percentage and the infraction penalty, and thus gives an overall indication of the autonomous agent's driving performance.
+
+To inspect the agents' driving visually while being evaluated,
+we developed a CARLA client called Carlo.
+This tool connects to a running CARLA simulation,
+and records the images TransFuser receives as input to a movie file.
+Carlo can be found at GitHub,\footnote{\url{https://github.com/aasewold/carlo}}
+and instructions for using the tool are found in \cref{app:instructions:carlo}.
+
+Unfortunately, when running the Longest6 benchmark on our own hardware, we experienced problems with the evaluation crashing when changing scenarios. We solved this by creating a script which resumes the evaluation at the current scenario each time it crashes. This is described in detail in \cref{app:sec:evaluation}.

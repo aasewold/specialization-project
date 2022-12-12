@@ -2,26 +2,23 @@
 
 Training vision transformers is a computationally heavy task.
 To fulfill the computational demands during this research,
-we have utilized three main computational resources.
+we have utilized three main computational resources which will be described in the following sections. To develop on these resources we mainly used the free and open-source code editor Visual Studio Code (VS Code) \cite{vs-code}. VS Code has a large ecosystem of extensions enabling support for debugging, smart completions and more in most programming languages. This includes an extension for connecting to remote machines in the editor using secure shell (SSH) \cite{vs-code-ssh}, a tool we use extensively when working with the project. Note that all of the resources below requires a connection through NTNU's campus network or the NTNU VPN. Finally, to synchronise progress within the team and to keep track of code changes, we decided to create a GitHub organization for storing all relevant project code and scripts.\footnote{\url{https://github.com/orgs/aasewold}} This also made it easy to synchronise code changes between the different resources we used when developing.
 
 
 \subsection{IDI Horizon}
-
-For local development and small-scale testing,
-we have used virtual machines from
+For initial development and small-scale testing,
+we used virtual machines from
 IDI Horizon - Virtual Desktop Infrastructure for Visual Computing.
 These are equipped with NVIDIA A10-24Q GPUs and CUDA version 11.4.
-Virtual desktop access have been available through VMWare Horizon \cite{software:vmware:horizon}.
+Access with a desktop graphical interface have been available through VMWare Horizon \cite{software:vmware:horizon}, but we mainly accessed the virtual machines using SSH from a terminal or with VS Code as described above. This is because we did not have much use of the GUI for the experiments in this project, and we rather preferred the lower latency when working directly through SSH.
 
 
 \subsection{\texttt{nap02}}
-
-For longer training sessions,
-we have used the \texttt{nap02}-server,
+While the IDI Horizon virtual machines were great for starting our research, we quickly realized that we would benefit from more performant hardware for longer training sessions and for running the CARLA simulator. We therefore got access to the \texttt{nap02}-server,
 a bare-bones computer equipped with
 2x Intel Xeon Gold 6342 CPUs,
 2x NVIDIA A100 80G GPUs with CUDA version 11.6,
-and 512 GiB RAM.
+and 512 GiB RAM. This server is shared between members of \acrshort{naplab}, but during the semester we were mostly the only ones using it, meaning we could take advantage of all of the available resources.
 
 
 \subsection{Idun}
@@ -31,5 +28,4 @@ to prepare for a larger amount of experiments during the master thesis,
 we have built tooling and documentation to utilize the Idun High Performance Computing cluster.
 Idun provides 864 CPU cores and 80 NVIDIA GPUs to the Department of Computer Science \cite{idun:overview},
 and thus enables a much higher degree of parallelization for future experiments.
-The cluster is managed using the Slurm Workload Manager \todo{cite {slurm}}.
-
+The cluster is managed using the Slurm Workload Manager \cite{slurm}.

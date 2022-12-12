@@ -1,11 +1,130 @@
 \chapter{Conclusion and Future Work}
 \label{chap:conclusion}
 
-Conclusion
+%The conclusion chapter is usually quite short - a paragraph or two - mainly summarising what was achieved in the project. It should answer the claim part of the introduction. It should also say something about what comes next ("future work").
+
+While the results are not entirely satisfying,
+showing much lower performance than expected,
+the experiments have still proven that training a custom TransFuser agent
+and evaluating it on CARLA version 0.9.13
+is possible on the available hardware.
+The knowledge from running the experiments
+have resulted in a well-documented method,
+as well as multiple points to improve upon in the future.
+
+We are satisfied with the development of the Carlo client
+that assists in inspecting the driving performance of evaluation runs while they are active.
+The containerization and tooling developed to enable the simulator to run on Idun
+will also provide useful in future experiments.
+Using the Idun cluster,
+multiple experiments and evaluations can be performed in parallel,
+significantly speeding up research.
+Additionally, using the Idun cluster enables entirely new methods of compute-intensive learning
+such as Direct Behaviour Learning and Reinforcement Learning,
+both of which are intractable to execute in a reasonable time frame without opportunities for parallel training.
 
 
 \section{Future Work}
 
+During this research,
+multiple ideas for improvement and future work have materialized.
+Work remains to finish the transition to CARLA version 0.9.13,
+specifically regarding the use of the Lincoln MKZ 2017 vehicle,
+and generation of a new dataset with the correct simulator version.
+It is also unclear why the custom-trained ensemble performed so poorly,
+to investigate this issue the three constituent models should be evaluated individually.
+
+As for possible beyond-baseline improvements,
+this can be achieved in multiple ways.
+Here we categorize the improvements based on their domain,
+specifically whether they change the:
+dataset,
+learning algorithm,
+agent itself,
+or the simulator.
+
+\subsection{Improvements to the dataset}
+
+In addition to recreating the dataset using CARLA version 0.9.13,
+there are other improvements that could be made to the dataset.
+One of which is creating the dataset using multiple different vehicles
+so that it contains data from different points of view
+and learns to generalize better over its input data and different vehicle dynamics.
+
+The simulator also supports two different rendering quality modes, Low and Epic.
+To further increase the variance of the dataset,
+data could be generated using both quality modes instead of just one.
+
+
+\subsection{Improvements to the learning algorithm}
+
+Previously discussed is the concept of Direct Policy Learning,
+which could increase the generalizability of the model
+by effectively making the training dataset more varied.
+This would require implementing a new training loop which distributes
+training across multiple nodes on the Idun cluster,
+and which synchronizes additions to the dataset between the nodes while running.
+
+Another, simpler, approach to this is to first train TransFuser on the original dataset using Behavioural Cloning,
+then perform multiple model roll-outs to generate a new dataset using the model's state distribution,
+and finally fine-tune the model on this new dataset.
+This brings some of the benefits from Direct Policy Learning such as mitigating the Distribution Shift problem,
+while being able to re-use the existing BC training methodology.
+
+
+\subsection{Improvements to the agent}
+
+During our experiments we noticed multiple issues with the agent's behaviour,
+such as colliding with the vehicle in front,
+driving on the pavement in right-turns,
+and simply standing still with no obstacles or red light in sight.
+We are curious about the agent's reasoning in these cases,
+and believe that adding a new output head to the model that produces a one-hot encoded vector of reasons
+could improve the explainability of the model.
+The vector could for instance contain cells for
+"Stopped because of red light",
+"Turning right because the road turns right",
+and "Changing lane to the left because I'm taking turning left in the intersection".
+By extending the expert agent and dataset generation method
+we could produce labeled data for this reason vector for the expert's decisions,
+and then train TransFuser to output its own reasoning.
+
+Another more radical approach is to separate the model into two sub-models,
+a planner and an executor.
+Both models would take as input the same data TransFuser already consumes,
+but produce different output.
+The planner outputs a command vector similar to the reason vector just explained,
+which is used as additional input to the executor to condition it on a specific command.
+The executor then produces output in the same format TransFuser does.
+This latent command vector increases the explainability of the model
+due to being interpretable,
+and could enable external input to the model like
+"keep left", "drive slowly", and "follow the car in front".
+
+Yet another approach is to introduce a persistent hidden state vector
+to let the model keep some memory of the immediate previous states,
+turning the model into a recurrent neural network.
+However this needs adjustment to the data-generation approach,
+as data is currently sampled at random ticks while driving through the simulator.
+To enable the model to utilize the state vector,
+we would need data that covers multiple consecutive ticks in the simulator.
+This would require generating a much larger dataset to keep the same variability,
+since very little of the scene actually changes from tick to tick.
+
+
+\subsection{Simulator}
+
+% snow poles her? og litt om snø generelt?
+
+
+% \subsection{Using Snow Poles for Detecting Snow Covered Roads}
+
+ In Norway there is a established infrastructure around snow poles that assist human drivers during the winter months \cite{statens-vegvesen-handbok-111}. Their purpose is to mark the road outline when snow can make it hard for plow trucks and drives to see where road is. They normally placed on both sides of the road at a given interval, and have a reflective mark near the top. Knowing this, it would be interesting to find out whether snow poles can also assist autonomous cars in detecting snow covered roads. This is further motivated by multiple studies that highlight challenges for autonomous driving in adverse weather conditions \cite{impact-of-adverse-weather-conditions, Sensor-Fusion-Based-Semantic-Segmentation}, as these challenges need to be solved before cars can become fully autonomous in countries prone to these weather conditions.
+
+Such a research project would require implementing a snow variant of a CARLA map, as this does currently not exist. This includes creating a new simulator asset in the form of a snow pole and placing instances of it in appropriate places around the map. Additionally it could be interesting to explore the effect of adding slippery roads and reduced sensory range due to snowy weather. CARLA thankfully supports both customizing maps and adding new assets \cite{carla-custom-maps, carla-custom-props}. When the snow map with snow poles are implemented, a new model would need to be trained. The methods and results from this specialization project could be used as a starting point for creating new experiments comparing driving performance before and after adding snow poles and/or snowy weather conditions. % Note that if implementing a snow covered map proves to be difficult, one could also simply experiment on the effect of adding snow poles to the simulation. This would still result in useful insights in the effect of using snow poles to navigate roads.
+
+
+\begin{comment}
 \begin{enumerate}
     \item Fungerer Direct Policy Learning bedre enn Behavioural Cloning?
         \\ - eventuelt lage et nytt datasett som styres av den ferdigtrente modellen i stedet for ekspertagenten,
@@ -46,3 +165,4 @@ Conclusion
         \item Lane detection ...
     \end{enumerate}
 \end{enumerate}
+\end{comment}

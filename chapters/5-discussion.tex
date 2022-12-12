@@ -1,11 +1,92 @@
 \chapter{Discussion}
 \label{chap:discussion}
 
-%The conclusion chapter is usually quite short - a paragraph or two - mainly summarising what was achieved in the project. It should answer the claim part of the introduction. It should also say something about what comes next ("future work").
+\todo[inline]{burde kanskje bytta ut Leaderboard-tallene med Longest6-tallene fra TransFuser-paperet heller?}
+% ^ er sikkert ikke så nøye, men synes ikke det siden vi nå rereferer til Leaderboard flere steder
 
-Diskutere research questions her?
+\begin{table}[]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        \textbf{Metric} & \textbf{Leaderboard} & \textbf{Exp. 1} & \textbf{Exp. 2} & \textbf{Exp. 3} \\ \hline
+        Routes completed &
+            36 / 36 &   30 / 36 &   30 / 36 & 30 / 36 \\ \hline
+        Driving score &
+            61.18   &   6.84\%  &   4.27\%  &   1.00\%  \\ \hline
+        Route completion &
+            86.7    &   82.3\%  &   63.6\%  &   3.63\%  \\ \hline
+        Infraction penalty &
+            0.710    &  0.130   &  0.170    &   0.308   \\ \hline
+        Collisions with pedestrians &
+            0.04    &   0.085   &   0.10    &   0.0     \\ \hline
+        Collisions with vehicles &
+            0.81    &   7.3     &   9.2     &  46.1     \\ \hline
+        Collisions with layout &
+            0.01    &   0.37    &   0.49    &  30.0     \\ \hline
+        Red light infractions &
+            0.05    &   0.085   &   0.070   &   0.73    \\ \hline
+        Stop sign infractions &
+            0.00    &   0.51    &   0.38    &   0.0     \\ \hline
+        Off-road infractions &
+            0.23    &   0.37    &   3.0     &  41.4     \\ \hline
+        Route deviations &
+            0.00    &   0       &   0.035   &   0.0     \\ \hline
+        Route timeouts &
+            0.01    &   0.28    &   0.21    &   2.19    \\ \hline
+        Agent blocked &
+            0.43    &   0.20    &   0.45    &  19.74    \\ \hline
+    \end{tabular}
+    \caption{Comparison of all experimental results.}
+    \label{tab:discussion:comparison}
+\end{table}
 
-Alle modellene er trent på data genertert fra MKZ2017,
-men evaluert på Tesla Model3.
-Forskjeller i svingradius etc. kan kanskje påvirke kjøreegenskaper og endelig score.
-TODO: evaluer også på MKZ2017 for å se om score er bedre der.
+As can be seen from \cref{tab:discussion:comparison},
+we observe worse results for all our experiments
+than what TransFuser achieves on the online CARLA Leaderboard.
+Though the Leaderboard evaluations are performed on a different, larger set of routes,
+we can still conclude that driving performance is drastically reduced in our experiments.
+
+One possible culprit is the use of the Tesla Model 3 instead of the Lincoln MKZ 2017 vehicle during evaluation.
+This causes there to be a mismatch between the training data and evaluation data,
+which could cause severe issues depending on how well the model generalizes to new data.
+Both driving dynamics and vehicle collision box size could be changed between these vehicles,
+possibly causing the observed increase in collision rates.
+There could also be other factors such as a difference in height between the vehicles,
+which would cause the cameras to record input images from a different point of view.
+If the model correlates an object's vertical position in the input image
+with its depth in the scene,
+this could cause the model to incorrectly calculate the distance to other vehicles,
+which could explain the observed results.
+
+The reason for the vehicle replacement is that the intended vehicle
+had changed its vehicle identifier
+from \texttt{vehicle.lincoln.mkz2017}
+to \texttt{vehicle.lincoln.mkz\_2017}
+between CARLA version 0.9.10 and 0.9.13,
+which we did not detect in our transition.
+Thus the evaluation scripts failed to load the vehicle and instead used a fallback vehicle.
+Future experiments should therefore investigate the performance difference of using the corrected vehicle identifier.
+
+The CARLA version upgrade may also have caused other unintended consequences.
+While we have not investigated these in further detail,
+there is a possibility that there are slight rendering differences between the versions,
+such as modified lightning, camera distortion model, weather, or 3D models.
+This could cause the training dataset (which was generated on version 0.9.10)
+to be obsolete and inadequate for driving well on version 0.9.13.
+Expanding on this,
+there could be other differences unrelated to graphics too,
+for instance vehicle dynamics and handling.
+We therefore recommend that future research generate a new dataset using CARLA version 0.9.13
+to ensure compatibility.
+An option then is to generate data from multiple different vehicles,
+as this can help the model generalize to different vehicles and point of views.
+
+It is also interesting that the ensemble in experiment 3 performed so poorly.
+Given that the same method is used to evaluate the ensemble in experiment 1,
+we find it unlikely that the implementation is to blame.
+This indicates that the two additional custom-trained sets of weights used in the ensemble are the culprit,
+thus these need to be evaluated individually to investigate if this is simply a result of poor training results.
+If so, it would be interesting to perform additional training runs
+to analyze the distribution of evaluation performance.
+
+

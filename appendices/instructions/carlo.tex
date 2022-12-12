@@ -1,0 +1,16 @@
+\section{Carlo}
+\label{app:instructions:carlo}
+
+Carlo\footnote{\url{https://github.com/aasewold/carlo}}
+is a Python client that connects to the CARLA simulator
+and interacts with it in different ways.
+The main use of Carlo in this research is to connect and record images
+from the camera sensors TransFuser receive input data from.
+
+Carlo can be run on \nap using Docker
+and attached to a running CARLA simulator on localhost port 2000 using the following commands after cloning the Carlo repository and entering the directory:
+\begin{lstlisting}
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
+docker-compose up --build
+\end{lstlisting}

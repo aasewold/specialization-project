@@ -1,5 +1,5 @@
 \section{Training and Evaluation on \nap}
-\label{app:sec:nap02}
+\label{app:instructions:nap02}
 
 As previously mentioned,
 \nap is a bare-bones host with
@@ -24,7 +24,7 @@ which has been our main method to connect and develop on \nap.
 After first connecting to the host with SSH,
 we clone the GitHub repository 
 and change into the directory:
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}
 git clone git@github.com:aasewold/transfuser.git
 cd transfuser
 \end{lstlisting}
@@ -58,7 +58,7 @@ the dataset was downloaded and extracted to
 \texttt{/data/datasets/transfuser}.
 Folders to store training and evaluation results were created,
 and symbolic links placed into the current directory:
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}
 mkdir -p ~/work/transfuser/{logs,models,results}
 ln -s ~/work/transfuser/logs .
 ln -s ~/work/transfuser/models .
@@ -69,7 +69,7 @@ We then built the Docker image by running the script \texttt{docker/build.sh}.
 Once this is completed,
 start a \texttt{screen} session with a suitable session name
 to let the training continue after you disconnect:
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}
 screen -S train-transfuser
 \end{lstlisting}
 
@@ -99,14 +99,15 @@ Trained parameters are saved to the \texttt{logs}-directory after every epoch,
 and when training is completed the weights are ready to be used for evaluation.
 
 \subsection{Evaluation}
+\label{app:sec:evaluation}
 
 To evaluate TransFuser on the Longest6-benchmark,
 we developed the script \texttt{docker/eval.sh}
-which launches the CARLA simulator and a TransFuser container that runs the Longest6 benchmark.
+which launches the CARLA simulator and a TransFuser Docker container that runs the Longest6 benchmark.
 However, the evaluation code proved unstable and crashes after each of the 36 routes.
 Luckily it can be restarted where it left off,
-thus the script \texttt{docker/eval\_loop.sh}
-continuously restarts the evaluation until all routes are completed.
+thus we use the script \texttt{docker/eval\_loop.sh}
+which continuously restarts the evaluation until all routes are completed.
 
 To use this script,
 first create a new folder under \texttt{models/} with a name identifying the specific model.
@@ -114,8 +115,18 @@ Then copy in or make symbolic links to all trained weights you wish to include i
 and also copy the \texttt{args.txt}-file belonging to one of the weights.
 Modify the paths at the top of the script to target the model,
 then launch the script in a \texttt{screen}-session to detach it from the SSH session.
-Results are saved in a JSON-file under the directory of the model.
+Results are saved in a JSON-file in the \texttt{results} sub-directory of the model.
 
 \subsection{Analysis}
 
-\todo[inline]{use result\_parser.py to do something cool}
+The JSON file contains results such as
+how many routes were completed,
+specific infractions per route,
+and quantitative metrics such as Driving Score, Route Completion, and Infraction Penalty.
+These numbers are reported as-is.
+
+The script \texttt{tools/result\_parser.py} can be run to visualize 
+the locations of infractions on the town maps.
+The script reads all JSON files it can find under \texttt{models/},
+and generates output in the folder \texttt{results/parsed}.
+
