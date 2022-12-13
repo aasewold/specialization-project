@@ -50,7 +50,7 @@ we will explore some of the key concepts and techniques used in deep learning fo
 
 
 \subsection{Supervised learning}
-\label{sec:superviser-learning}
+\label{sec:supervised-learning}
 % 90% literally written by chatgpt lmao 
 Supervised learning is a type of machine learning algorithm witch utilizes a labeled dataset.
 That is, the dataset consists of pairs of input and output data,
@@ -170,12 +170,12 @@ and then train the imitating agent using this Reward function and Reinforcement 
 \subsection{Computer Vision}
 Computer vision is a field of artificial intelligence that focuses on interpreting visual data from the physical world. It involves the development of systems that can automatically extract and analyze information from visual sources, such as images and videos. This allows computers to perform tasks such as recognizing objects, detecting faces, and understanding scenes in real-time. In the context of autonomous driving, computer vision plays a crucial role in enabling self-driving cars to perceive and understand their surroundings in order to navigate safely and efficiently.
 
-Computer vision systems are typically trained on large datasets of labeled images and videos, which allows them to learn to identify and classify objects, scenes and actions. This training typically involves using supervised learning methods as described in \cref{sec:superviser-learning}. In the case of autonomous driving, computer vision algorithms are trained to recognize and classify objects such as other vehicles, pedestrians, road signs and traffic lights.
+Computer vision systems are typically trained on large datasets of labeled images and videos, which allows them to learn to identify and classify objects, scenes and actions. This training typically involves using supervised learning methods as described in \cref{sec:supervised-learning}. In the case of autonomous driving, computer vision algorithms are trained to recognize and classify objects such as other vehicles, pedestrians, road signs and traffic lights.
 
 \subsection{Vision Transformers}
 The Transformer architecture, originally proposed by \textcite{attention-is-all-you-need} in 2017, is mainly used for sequence-to-sequence natural language processing tasks such as machine translation, text generation and document summarization. Unlike traditional recurrent network architectures, which process input sequentially, Transformer models use the self-attention mechanism, where the key idea is to calculate the relevance of one output element to all input elements.  The mechanism process the entire input simultaneously, which allows them to be computations to be parallelized more efficiently. This again makes Transformer networks faster and more scalable than both traditional recurrent networks and convolutional networks. 
 
-Even though Transformers initially were designed with natural language processing in mind, their exemplary performance in models like BERT \cite{bert} and GPT-3 \cite{gpt-3} has sparked interest also in the field of computer vision. The self-attention mechanism allows processing multiple sensor modalities like RGB images and LIDAR using similar processing blocks and show great scalability to large networks and huge datasets \cite{transformers-in-vision-survey}. We will see in \cref{sec:related-work} multiple examples of models utilizing vision transformers to fuse multi-modal input, % a task normally hard to deal with
+Even though Transformers initially were designed with natural language processing in mind, their exemplary performance in models like BERT \cite{bert} and GPT-3 \cite{gpt-3} has sparked interest also in the field of computer vision. The self-attention mechanism allows processing multiple sensor modalities like RGB images and LIDAR using similar processing blocks and show great scalability to large networks and huge datasets \cite{transformers-in-vision-survey}. We will see in \cref{sec:related-work} multiple examples of models utilizing vision transformers to fuse multi-modal input. % a task normally hard to deal with
 
 
 \section{Modular vs End-to-End Approaches}
