@@ -1,2 +1,8 @@
 build/
 indent.log
+
+!/thesis.pdf
+!/thesis.tex
+/thesis.*
+
+*.aux

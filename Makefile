@@ -11,7 +11,7 @@ SRCS=\
 	glossary.tex \
 	thesis.tex
 
-LATEX_FLAGS=-shell-escape
+LATEX_FLAGS=-shell-escape -interaction nonstopmode
 BIBER_FLAGS=
 
 mkdir = @mkdir -p $(@D)
@@ -26,6 +26,7 @@ thesis.pdf: $(SRCS)
 
 clean:
 	-@$(RM) \
+		titlepage.aux \
 		$(wildcard thesis-gnuplottex*) \
-		$(addprefix thesis,.gnuploterrors .aux .bbl .bcf .blg .lof .log .lol .lot .out .pdf .run.xml .toc .acn .glo .ist .acr .alg .glg .gls)
+		$(addprefix thesis,.gnuploterrors .aux .bbl .bcf .blg .lof .log .lol .lot .out .pdf .run.xml .toc .acn .glo .ist .acr .alg .glg .gls .tdo)
 .PHONY: clean
