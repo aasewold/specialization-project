@@ -129,6 +129,20 @@ thus it will always have sufficient spacing in front to avoid collisions.
 The exception is when other cars are standing still waiting in a queue,
 in which case we do observe collisions,
 for instance the ones seen to the top right in the figure.
+This last behaviour is clearly present in the video as well,
+where the model consistently fails to keep proper distance to vehicles in front.
+
+On the other hand,
+the video does indicate impressive compliance to red light signals.
+The vehicle consistently stops when the signal is red,
+and resumes driving when it changes to green.
+However the agent is perhaps a bit pessimistic in how far away from the signal it stops,
+it seems that the agent will stop as long as there is a red light in view,
+no matter how far away.
+This could in-fact be a behaviour learned from the expert agent,
+which we have not investigated.
+Future experiments should therefore perform both quantitative and qualitative
+evaluations of the expert agent to find the upper bound on the imitating agent's potential.
 
 
 \section{Experiment 2: TransFuser with one set of weights trained from scratch}
@@ -219,6 +233,14 @@ This greatly inflates the collision count,
 and demonstrates a lack of proper spacing.
 Similar streaks are seen elsewhere in the map.
 
+The video shows that the agent decides independently whether to drive through an intersection,
+it does not just follow the vehicle in front when it is running a red light.
+This indicates that the agent has learned
+a policy to stop at red lights,
+instead of a policy to follow other vehicles.
+However, the video also reveals an unfortunate event with a cyclist,
+and the same rear-ending behaviour as seen previously.
+
 
 \section{Experiment 3: TransFuser with ensemble of three sets of weights trained from scratch}
 \label{sec:exp3}
@@ -268,7 +290,16 @@ and a higher percentage of off-road driving.
 The locations of the various infractions can be seen in \cref{fig:exp3:town02}.
 In this experiment we observe fewer collisions in total,
 but an increased count of the agent getting stuck.
-Note that the agent gets stuck at places where it collides with either the scene geometry or other vehicles. A video of this experiment can be found here: \url{https://youtu.be/ZREUj_nCAEA}.
+Note that the agent gets stuck at places where it collides with either the scene geometry or other vehicles.
+
+A video of this experiment can be found here: \url{https://youtu.be/ZREUj_nCAEA}.
+In the video, the agents displays very poor performance.
+It stops in the middle of the road,
+and fails to drive further until the creeping mechanism kicks in,
+after which it continues to drive slightly forward,
+unfortunately in the middle of the road.
+The car does stop at a red light,
+but shortly after collides with an oncoming vehicle and gets permanently stuck.
 
 \begin{figure}
     \centering
@@ -304,4 +335,6 @@ As seen from \cref{fig:exp3:town02},
 there are much fewer collisions in total than in the previous experiments.
 This is due to the agent colliding once and getting stuck,
 and thus doesn't get the chance to increase its collision count further.
+The video reveals one possible failure mode and in general poor driving performance.
+The agent did however stop at the red light.
 In summary, this experiment did not produce an agent capable of driving well at all.
